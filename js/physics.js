@@ -33,7 +33,7 @@ export const DASH_SPEED = 600
 export const DASH_TIME = 0.24
 export const DASH_COOLDOWN = 1.5
 
-const POP_TIME = 4
+export const POP_TIME = 4
 const POP_BOUNCE = -520
 const POP_SAFE_DISTANCE = 240
 

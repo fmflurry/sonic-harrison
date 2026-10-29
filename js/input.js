@@ -1,11 +1,15 @@
-const key = { left: false, right: false, jump: false }
-const touch = { left: false, right: false, jump: false }
+const FIELDS = ["left", "right", "jump", "down", "dash"]
+const key = Object.fromEntries(FIELDS.map((field) => [field, false]))
+const touch = Object.fromEntries(FIELDS.map((field) => [field, false]))
 
 const heldByCode = {
   ArrowLeft: "left",
   ArrowRight: "right",
   ArrowUp: "jump",
   Space: "jump",
+  ArrowDown: "down",
+  ShiftLeft: "dash",
+  ShiftRight: "dash",
 }
 
 export function readHeld() {
@@ -13,6 +17,15 @@ export function readHeld() {
     left: key.left || touch.left,
     right: key.right || touch.right,
     jump: key.jump || touch.jump,
+    down: key.down || touch.down,
+    dash: key.dash || touch.dash,
+  }
+}
+
+function releaseAll() {
+  for (const field of FIELDS) {
+    key[field] = false
+    touch[field] = false
   }
 }
 
@@ -29,14 +42,7 @@ export function bindInput(onGesture) {
     if (!field) return
     key[field] = false
   })
-  window.addEventListener("blur", () => {
-    key.left = false
-    key.right = false
-    key.jump = false
-    touch.left = false
-    touch.right = false
-    touch.jump = false
-  })
+  window.addEventListener("blur", releaseAll)
 
   for (const button of document.querySelectorAll("[data-hold]")) {
     const field = button.dataset.hold
@@ -54,3 +60,5 @@ export function bindInput(onGesture) {
     button.addEventListener("pointercancel", release)
   }
 }
+
+export { releaseAll }

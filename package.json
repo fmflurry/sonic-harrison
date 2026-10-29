@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test tests/physics.test.js",
+    "test": "node --test tests/physics.test.js tests/levels.test.js tests/sprites.test.js tests/characters.test.js",
     "smoke": "playwright test"
   },
   "devDependencies": {

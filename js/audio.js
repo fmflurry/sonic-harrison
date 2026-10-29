@@ -1,5 +1,14 @@
 let ctx = null
 let soundBlocked = false
+let muted = false
+
+export function isMuted() {
+  return muted
+}
+
+export function setMuted(value) {
+  muted = value
+}
 
 export function unlockAudio() {
   const AudioContext = globalThis.AudioContext || globalThis.webkitAudioContext
@@ -13,7 +22,7 @@ export function unlockAudio() {
 }
 
 function beep({ freq, dur, type, gain, slide }) {
-  if (!ctx || soundBlocked || ctx.state !== "running") return
+  if (muted || !ctx || soundBlocked || ctx.state !== "running") return
   const start = ctx.currentTime
   const osc = ctx.createOscillator()
   const amp = ctx.createGain()
@@ -45,6 +54,19 @@ export const sfx = {
   },
   oups() {
     beep({ freq: 340, dur: 0.16, type: "triangle", gain: 0.05, slide: 170 })
+  },
+  roll() {
+    beep({ freq: 220, dur: 0.14, type: "triangle", gain: 0.035, slide: 120 })
+  },
+  pop() {
+    beep({ freq: 620, dur: 0.07, type: "sine", gain: 0.05, slide: 1240 })
+    setTimeout(() => beep({ freq: 980, dur: 0.06, type: "sine", gain: 0.035, slide: 1500 }), 60)
+  },
+  dash() {
+    beep({ freq: 300, dur: 0.18, type: "sawtooth", gain: 0.02, slide: 1100 })
+  },
+  spring() {
+    beep({ freq: 260, dur: 0.22, type: "triangle", gain: 0.05, slide: 900 })
   },
   clear() {
     ;[523, 659, 784, 1046].forEach((freq, index) => {
