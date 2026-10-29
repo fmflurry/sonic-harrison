@@ -1,6 +1,6 @@
 import { ART_H, ART_W, levelArt, makeCanvas, sharedArt } from "./art.js"
 import { sfx } from "./audio.js"
-import { readHeld } from "./input.js"
+import { readHeld, takePresses } from "./input.js"
 import { levels } from "./levels.js"
 import { VIEW_H, VIEW_W, createPlayState, moverPosition, stepPlay } from "./physics.js"
 import { advanceEffects, createEffects, drawWorld } from "./render.js"
@@ -33,6 +33,7 @@ export function setPaused(value) {
   if (!session || !running) return
   cancelAnimationFrame(frameRequest)
   if (!paused) {
+    takePresses()
     session.last = performance.now()
     frameRequest = requestAnimationFrame(tick)
   }
@@ -110,11 +111,10 @@ function playCues(state) {
 }
 
 // Presses are latched until a physics step uses them: on a 120 Hz screen many frames run no step.
-function latchPresses(held) {
-  if (held.jump && !session.jumpWasDown) session.jumpQueued = true
-  if (held.dash && !session.dashWasDown) session.dashQueued = true
-  session.jumpWasDown = held.jump
-  session.dashWasDown = held.dash
+function latchPresses() {
+  const taps = takePresses()
+  if (taps.jump) session.jumpQueued = true
+  if (taps.dash) session.dashQueued = true
 }
 
 function tick(now) {
@@ -123,7 +123,7 @@ function tick(now) {
   const delta = Math.max(0, Math.min(now - session.last, 100))
   session.last = now
   const held = readHeld()
-  latchPresses(held)
+  latchPresses()
   if (session.state.phase === "play") {
     session.acc += delta
     for (let steps = 0; session.acc >= STEP_MS && steps < MAX_STEPS; steps += 1) {
@@ -166,11 +166,10 @@ export function startLevel(index, character) {
     time: 0,
     last: performance.now(),
     frames: 0,
-    jumpWasDown: true,
-    dashWasDown: true,
     jumpQueued: false,
     dashQueued: false,
   }
+  takePresses()
   paused = false
   running = true
   cancelAnimationFrame(frameRequest)

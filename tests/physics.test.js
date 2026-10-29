@@ -293,7 +293,7 @@ test("a roll keeps its speed longer than a run when the arrows are let go", () =
   assert.ok(rolling.player.vx > coasting.player.vx + 60)
 })
 
-test("a roll gains speed downhill and a run does not", () => {
+test("a roll gains speed downhill faster than a run", () => {
   const level = flat({
     width: 4000,
     blocks: [],
@@ -306,7 +306,7 @@ test("a roll gains speed downhill and a run does not", () => {
   const rolledStart = runUp(level, 12, start)
   const rolled = frames(level, downRight, 108, rolledStart)
   assert.equal(rolled.player.ball, true)
-  assert.ok(rolled.player.vx > ran.player.vx + 80, `${rolled.player.vx} vs ${ran.player.vx}`)
+  assert.ok(rolled.player.vx > ran.player.vx + 40, `${rolled.player.vx} vs ${ran.player.vx}`)
   assert.equal(rolled.player.grounded, true)
 })
 
@@ -496,14 +496,107 @@ test("a respawn uncurls the player and stops the dash", () => {
   assert.equal(respawned.player.dashTime, 0)
 })
 
-test("a boost fades back to the normal top speed while running", () => {
+function longFlat(extra = {}) {
+  return flat({
+    width: 8000,
+    blocks: [{ x: 0, y: GROUND_TOP, w: 8000, h: 80 }],
+    goal: { x: 7900, y: GROUND_TOP - 90, w: 40, h: 90 },
+    ...extra,
+  })
+}
+
+test("a boost curls the player into a rolling ball", () => {
+  const level = longFlat({ boosts: [{ x: 200, y: GROUND_TOP - 18, w: 80, h: 18, speed: 480 }] })
+  let state = createPlayState(level)
+  let curled = null
+  for (let i = 0; i < 60 && !curled; i += 1) {
+    state = stepPlay(state, level, runRight, dt)
+    if (state.player.ball) curled = state
+  }
+  assert.ok(curled, "never curled")
+  assert.equal(curled.player.grounded, true)
+  assert.equal(curled.player.h, BALL_H)
+  assert.ok(Math.abs(curled.player.y + curled.player.h / 2 - GROUND_TOP) < 0.5)
+})
+
+test("the ball stands up by itself once it is back to running speed", () => {
+  const level = longFlat({ boosts: [{ x: 200, y: GROUND_TOP - 18, w: 80, h: 18, speed: 480 }] })
+  let state = createPlayState(level)
+  let wasBall = false
+  for (let i = 0; i < 600; i += 1) {
+    state = stepPlay(state, level, runRight, dt)
+    if (state.player.ball) wasBall = true
+  }
+  assert.equal(wasBall, true)
+  assert.equal(state.player.ball, false)
+  assert.equal(state.player.h, PLAYER_H)
+  assert.ok(Math.abs(state.player.vx - 260) < 1)
+})
+
+test("running at normal speed never curls by itself", () => {
+  const level = longFlat()
+  let state = createPlayState(level)
+  for (let i = 0; i < 300; i += 1) {
+    state = stepPlay(state, level, runRight, dt)
+    assert.equal(state.player.ball, false)
+  }
+})
+
+test("running down a slope builds speed and curls into a ball", () => {
   const level = flat({
     width: 4000,
-    blocks: [{ x: 0, y: GROUND_TOP, w: 4000, h: 80 }],
-    boosts: [{ x: 200, y: GROUND_TOP - 18, w: 80, h: 18, speed: 480 }],
+    blocks: [],
+    slopes: [{ x: 0, w: 3000, yLeft: GROUND_TOP - 600, yRight: GROUND_TOP }],
+    spawn: { x: 180, y: GROUND_TOP - 600 + 180 * 0.2 - PLAYER_H / 2 },
+    checkpoints: [{ x: 180, y: STAND_Y }],
   })
-  const state = frames(level, runRight, 200)
-  assert.ok(Math.abs(state.player.vx - 260) < 1)
+  let state = createPlayState(level)
+  let curled = false
+  let fastest = 0
+  for (let i = 0; i < 240; i += 1) {
+    state = stepPlay(state, level, runRight, dt)
+    if (state.player.ball && state.player.grounded) curled = true
+    fastest = Math.max(fastest, state.player.vx)
+  }
+  assert.equal(curled, true)
+  assert.ok(fastest > 400, `${fastest}`)
+})
+
+test("a buffered jump and a coyote jump curl into a ball too", () => {
+  const level = flat()
+  let state = createPlayState(level)
+  state = { ...state, player: { ...state.player, y: STAND_Y - 30, vy: 200, grounded: false, coyote: 0 } }
+  state = stepPlay(state, level, { ...hold, jumpPressed: true }, dt)
+  let jumped = null
+  for (let i = 0; i < 20 && !jumped; i += 1) {
+    state = stepPlay(state, level, hold, dt)
+    if (state.player.vy < -600) jumped = state
+  }
+  assert.ok(jumped, "buffered jump never fired")
+  assert.equal(jumped.player.ball, true)
+
+  const ledge = flat({ width: 800, blocks: [{ x: 0, y: GROUND_TOP, w: 230, h: 80 }], goal: { x: 760, y: 0, w: 20, h: 20 } })
+  let run = createPlayState(ledge)
+  for (let i = 0; i < 90 && run.player.grounded; i += 1) run = stepPlay(run, ledge, runRight, dt)
+  assert.equal(run.player.ball, false)
+  const coyote = stepPlay(run, ledge, { ...runRight, jumpPressed: true }, dt)
+  assert.ok(coyote.player.vy < -600)
+  assert.equal(coyote.player.ball, true)
+})
+
+test("a fast loop throws the player out rolling", () => {
+  const loop = { cx: 620, cy: STAND_Y - 100, r: 100, minSpeed: 340 }
+  const level = longFlat({ boosts: [{ x: 160, y: GROUND_TOP - 18, w: 90, h: 18, speed: 500 }], loops: [loop] })
+  let state = createPlayState(level)
+  let left = null
+  for (let i = 0; i < 260 && !left; i += 1) {
+    const before = state.player.mode
+    state = stepPlay(state, level, runRight, dt)
+    if (before === "loop" && state.player.mode === "free") left = state
+  }
+  assert.ok(left, "never left the loop")
+  assert.equal(left.player.ball, true)
+  assert.ok(Math.abs(left.player.y + left.player.h / 2 - GROUND_TOP) < 1)
 })
 
 test("jumping just past a hill crest keeps going forward", () => {

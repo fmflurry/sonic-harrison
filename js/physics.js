@@ -27,6 +27,10 @@ const ROLL_FRICTION = 60
 const ROLL_PUSH = 320
 const ROLL_BRAKE = 900
 const SLOPE_ROLL = 1100
+const SLOPE_RUN = 400
+// Faster than any run: the hero curls up on his own, like the classic 16-bit platformers.
+export const AUTO_BALL_SPEED = 400
+const AUTO_STAND_MARGIN = 20
 const BRAKE_SPEED = 120
 
 export const DASH_SPEED = 600
@@ -287,13 +291,15 @@ function clampSpeed(vx) {
 
 function steerRun(body, input, stats, dt) {
   const accel = body.grounded ? stats.accel : stats.airAccel
-  let vx = body.vx
+  // Running downhill builds momentum; uphill keeps its pace so a child never gets stuck.
+  const downhill = body.grounded && body.slope * body.vx > 0
+  let vx = downhill ? body.vx + SLOPE_RUN * body.slope * dt : body.vx
   if (input.right && !input.left) {
     if (vx < stats.maxRun) vx = Math.min(stats.maxRun, vx + accel * dt)
-    else vx = Math.max(stats.maxRun, vx - OVERSPEED_FADE * dt)
+    else if (!downhill) vx = Math.max(stats.maxRun, vx - OVERSPEED_FADE * dt)
   } else if (input.left && !input.right) {
     if (vx > -stats.maxRun) vx = Math.max(-stats.maxRun, vx - accel * dt)
-    else vx = Math.min(-stats.maxRun, vx + OVERSPEED_FADE * dt)
+    else if (!downhill) vx = Math.min(-stats.maxRun, vx + OVERSPEED_FADE * dt)
   } else {
     vx = approach(vx, 0, FRICTION * dt)
   }
@@ -307,7 +313,7 @@ function steerRoll(body, input, stats, dt) {
     vx = approach(vx, 0, ROLL_BRAKE * dt)
   } else if (direction !== 0 && Math.abs(vx) < stats.maxRun) {
     vx += direction * ROLL_PUSH * dt
-  } else {
+  } else if (body.slope * vx <= 0) {
     vx = approach(vx, 0, ROLL_FRICTION * dt)
   }
   return clampSpeed(vx)
@@ -385,14 +391,16 @@ function stepFree(player, level, input, stats, time, dt) {
   const coyote = grounded ? COYOTE : didJump ? 0 : Math.max(0, body.coyote - dt)
   const facing = moved.vx < -10 ? -1 : moved.vx > 10 ? 1 : body.facing
   moved = { ...moved, coyote, facing, grounded }
-  return { player: curlOrUncurl(moved, level, input), dashed: Boolean(dashed) }
+  return { player: curlOrUncurl(moved, level, input, stats), dashed: Boolean(dashed) }
 }
 
-function curlOrUncurl(player, level, input) {
+function curlOrUncurl(player, level, input, stats) {
   if (!player.grounded) return { ...player, braking: false }
   const speed = Math.abs(player.vx)
-  if (!player.ball && input.down && speed >= ROLL_START) return { ...withShape(player, true), braking: false }
-  if (player.ball && !(input.down && speed >= ROLL_KEEP) && standingRoom(player, level)) {
+  const wantsBall = speed >= AUTO_BALL_SPEED || (input.down && speed >= ROLL_START)
+  if (!player.ball && wantsBall) return { ...withShape(player, true), braking: false }
+  const keepsBall = speed >= stats.maxRun + AUTO_STAND_MARGIN || (input.down && speed >= ROLL_KEEP)
+  if (player.ball && !keepsBall && standingRoom(player, level)) {
     return { ...withShape(player, false), braking: isBraking(player, input) }
   }
   return { ...player, braking: isBraking(player, input) }

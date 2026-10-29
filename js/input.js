@@ -1,6 +1,8 @@
 const FIELDS = ["left", "right", "jump", "down", "dash"]
 const key = Object.fromEntries(FIELDS.map((field) => [field, false]))
 const touch = Object.fromEntries(FIELDS.map((field) => [field, false]))
+// A tap shorter than one frame is still a jump: presses are recorded when the event arrives.
+const pressed = { jump: false, dash: false }
 
 const heldByCode = {
   ArrowLeft: "left",
@@ -10,6 +12,13 @@ const heldByCode = {
   ArrowDown: "down",
   ShiftLeft: "dash",
   ShiftRight: "dash",
+}
+
+export function takePresses() {
+  const taken = { jump: pressed.jump, dash: pressed.dash }
+  pressed.jump = false
+  pressed.dash = false
+  return taken
 }
 
 export function readHeld() {
@@ -42,6 +51,7 @@ export function bindInput(onGesture, gameHasKeys) {
     event.preventDefault()
     if (event.repeat && key[field]) return
     key[field] = true
+    if (field in pressed) pressed[field] = true
     onGesture()
   })
   window.addEventListener("keyup", (event) => {
@@ -56,6 +66,7 @@ export function bindInput(onGesture, gameHasKeys) {
     button.addEventListener("pointerdown", (event) => {
       event.preventDefault()
       touch[field] = true
+      if (field in pressed) pressed[field] = true
       if (event.isTrusted) button.setPointerCapture(event.pointerId)
       onGesture()
     })

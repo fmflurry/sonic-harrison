@@ -147,11 +147,23 @@ test("Nox dashes with Shift and the Eclair button shows its charge", async ({ pa
   expect(errors).toEqual([])
 })
 
-test("Piko has no Eclair button", async ({ page }) => {
+test("Piko has no Eclair button and nobody needs a Boule button", async ({ page }) => {
   await page.goto("/")
   await page.getByRole("button", { name: "Jouer" }).click()
-  await expect(page.getByRole("button", { name: "Boule" })).toBeVisible()
+  await expect(page.getByRole("button", { name: "Sauter" })).toBeVisible()
   await expect(page.getByRole("button", { name: "Éclair" })).toBeHidden()
+  await expect(page.getByRole("button", { name: "Boule" })).toHaveCount(0)
+})
+
+test("a jump curls Piko into a ball in the browser", async ({ page }) => {
+  await page.goto("/")
+  await page.getByRole("button", { name: "Jouer" }).click()
+  await expect(page.locator("#screen")).toBeVisible()
+  await hold(page, "ArrowRight", 300)
+  await page.keyboard.press("Space")
+  await expect.poll(async () => (await inspect(page)).player.ball).toBe(true)
+  expect((await inspect(page)).player.grounded).toBe(false)
+  await page.keyboard.up("ArrowRight")
 })
 
 test("pause holds focus, survives a held key and Space presses menu buttons", async ({ page }) => {
