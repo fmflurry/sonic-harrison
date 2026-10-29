@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Piko Turbo viewport fit</title>
+  <style>
+    body { margin: 0; font-family: "Trebuchet MS", sans-serif; color: #14315c; background: #e7fbff; }
+    main { max-width: 980px; margin: 0 auto; padding: 28px 20px 48px; }
+    h1 { margin: 0 0 6px; font-size: 40px; color: #1f4fd0; }
+    h2 { margin: 28px 0 10px; font-size: 22px; }
+    p { line-height: 1.45; }
+    .pair, .files, .checks { display: flex; gap: 12px; flex-wrap: wrap; }
+    .card, .file { background: #fff; border-radius: 16px; padding: 14px 16px; box-shadow: 0 4px 0 #9fd4ff; }
+    .card { flex: 1 1 280px; }
+    .before { background: #ffe8ee; box-shadow: 0 4px 0 #e23b6a; }
+    .after, .ok { background: #e9ffe8; box-shadow: 0 4px 0 #3cb44a; }
+    .risk { background: #fff6d8; box-shadow: 0 4px 0 #e2a100; }
+    .phone { width: 220px; height: 110px; border: 3px solid #1f4fd0; border-radius: 12px; background: linear-gradient(#69c8ff, #e7fbff); position: relative; overflow: hidden; margin-top: 8px; }
+    .phone span { position: absolute; left: 16px; right: 16px; text-align: center; font-weight: 800; font-size: 13px; }
+    .cut .title { top: 8px; }
+    .cut .btn { top: 96px; color: #e23b6a; }
+    .fit .title { top: 18px; }
+    .fit .btn { top: 58px; background: #ffe14a; color: #5a3b00; border-radius: 999px; padding: 4px 0; }
+    code { font-family: ui-monospace, monospace; font-size: 13px; }
+    ol { margin: 8px 0 0; padding-left: 18px; }
+    @media (max-width: 700px) {
+      .pair, .files, .checks { display: block; }
+      h1 { font-size: 30px; }
+      .phone { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Short landscape, start button on screen</h1>
+    <p>Florian’s iPad and mobile Safari, held sideways, showed Piko Turbo, Le hérisson bleu, and Pour Harrison, then stopped. The Jouer button sat below the visible area, and the page could not scroll.</p>
+
+    <h2>Before and after</h2>
+    <div class="pair">
+      <div class="card before">
+        <b>Before</b>
+        <p><code>min-height: 100dvh</code> let the title grow past the screen. <code>overflow: hidden</code> blocked scrolling. At 1024×470, Niveaux ended near y=539.</p>
+        <div class="phone cut" aria-hidden="true">
+          <span class="title">Piko Turbo</span>
+          <span class="btn">Jouer cut off</span>
+        </div>
+      </div>
+      <div class="card after">
+        <b>After</b>
+        <p>The page height is the visible viewport. A short screen uses a side-by-side title, and a scale keeps every menu inside. A tap anywhere on the title starts level 1, except Niveaux.</p>
+        <div class="phone fit" aria-hidden="true">
+          <span class="title">Piko Turbo</span>
+          <span class="btn">Jouer</span>
+        </div>
+      </div>
+    </div>
+
+    <h2>What changes on resize</h2>
+    <ol>
+      <li><code>js/viewport.js</code> sets <code>--app-height</code> from <code>visualViewport</code>, because Safari’s layout viewport stays taller than the area you can see.</li>
+      <li>Title, level list, and Bravo scale with <code>transform</code> only when they are still too tall.</li>
+      <li><code>Phaser.Scale.FIT</code> and <code>CENTER_BOTH</code> redraw the canvas. The left, right, and Saut buttons stay in the bar under it.</li>
+      <li>Listeners: resize, orientationchange, visualViewport resize and scroll, and a ResizeObserver.</li>
+    </ol>
+
+    <h2>Files</h2>
+    <div class="files">
+      <div class="file"><code>css/game.css</code><br>100dvh, compact title, touch size in dvh</div>
+      <div class="file"><code>index.html</code><br>Fit wrappers around the three menus</div>
+      <div class="file"><code>js/viewport.js</code><br>Visible height and scale-to-fit</div>
+      <div class="file"><code>js/main.js</code><br>Title tap starts the game</div>
+      <div class="file"><code>js/play.js</code><br>Refresh the FIT scale</div>
+      <div class="file"><code>tests/viewport.spec.js</code><br>1024×470, 844×390, 667×375</div>
+    </div>
+
+    <h2>Checks</h2>
+    <div class="checks">
+      <div class="card ok"><b>4 viewport tests passed</b><p>Each landscape size keeps the title, canvas, HUD, and touch buttons inside the viewport. A tap on the title starts the game. A resize does too.</p></div>
+      <div class="card ok"><b>11 physics tests and the smoke test passed</b><p>Movement rules are unchanged. The French title still loads La prairie with no console errors.</p></div>
+    </div>
+
+    <h2>Risk</h2>
+    <div class="card risk">
+      <p>The menu scale is a safety net for heights the compact layout does not already fit. A very short window shrinks the title instead of scrolling. The game canvas stays on Phaser’s own FIT scale, so the touch buttons do not shrink with that transform.</p>
+    </div>
+  
+<section id="kpi-metrics" style="margin-top:28px">
+<h2 style="font-size:18px;margin:0 0 8px">Metrics</h2>
+<p style="margin:0 0 10px;color:#57534e">fmflurry/sonic-harrison  fix/viewport-fit  pr n/a. Status: partial.</p>
+<table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #d6d3d1"><tr><th style="text-align:left;padding:6px 10px;border-bottom:1px solid #d6d3d1">Wall</th><td style="padding:6px 10px;border-bottom:1px solid #d6d3d1">n/a</td></tr><tr><th style="text-align:left;padding:6px 10px;border-bottom:1px solid #d6d3d1">Active</th><td style="padding:6px 10px;border-bottom:1px solid #d6d3d1">n/a</td></tr><tr><th style="text-align:left;padding:6px 10px;border-bottom:1px solid #d6d3d1">Sessions</th><td style="padding:6px 10px;border-bottom:1px solid #d6d3d1">cursor 0, claude 0, opencode 0</td></tr><tr><th style="text-align:left;padding:6px 10px;border-bottom:1px solid #d6d3d1">Tokens</th><td style="padding:6px 10px;border-bottom:1px solid #d6d3d1">n/a</td></tr><tr><th style="text-align:left;padding:6px 10px;border-bottom:1px solid #d6d3d1">Tool failures</th><td style="padding:6px 10px;border-bottom:1px solid #d6d3d1">0</td></tr><tr><th style="text-align:left;padding:6px 10px;border-bottom:1px solid #d6d3d1">Guard blocks</th><td style="padding:6px 10px;border-bottom:1px solid #d6d3d1">0</td></tr><tr><th style="text-align:left;padding:6px 10px;border-bottom:1px solid #d6d3d1">Review rounds</th><td style="padding:6px 10px;border-bottom:1px solid #d6d3d1">0</td></tr><tr><th style="text-align:left;padding:6px 10px;border-bottom:1px solid #d6d3d1">Fix rounds</th><td style="padding:6px 10px;border-bottom:1px solid #d6d3d1">0</td></tr></table>
+<p style="margin:10px 0 0">Tools: none</p>
+<p style="margin:4px 0 0">Skills: none</p>
+<p style="margin:4px 0 0">Agents: main 0</p>
+<p style="margin:4px 0 0">Failure tools: none. Durations: n/a.</p>
+</section>
+</main>
+</body>
+</html>
