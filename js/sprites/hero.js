@@ -212,8 +212,6 @@ export function buildHeroFrames(character) {
 }
 
 export const ANIMATIONS = {
-  idle: ["idle0", "idle0", "idle0", "idle0", "idle0", "idle0", "idle0", "idle1"],
   run: ["run0", "run1", "run2", "run3", "run4", "run5", "run6", "run7"],
   ball: ["ball0", "ball1", "ball2", "ball3", "ball4", "ball5", "ball6", "ball7"],
-  cheer: ["cheer0", "cheer1"],
 }

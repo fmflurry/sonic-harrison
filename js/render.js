@@ -44,12 +44,12 @@ function heroFrame(frames, state, time) {
   if (player.invuln > 1.45) return frames.hurt
   if (player.mode === "loop" || player.ball) {
     const fps = player.grounded || player.mode === "loop" ? 10 + Math.abs(player.vx || player.loopSpeed) / 18 : 24
-    return frames[`ball${Math.floor(time * fps) % 8}`]
+    return frames.ballCycle[Math.floor(time * fps) % frames.ballCycle.length]
   }
   if (!player.grounded) return player.vy < 0 ? frames.rise : frames.fall
   if (player.braking) return frames.brake
   const speed = Math.abs(player.vx)
-  if (speed > 12) return frames[`run${Math.floor(time * Math.max(8, speed / 20)) % 8}`]
+  if (speed > 12) return frames.runCycle[Math.floor(time * Math.max(8, speed / 20)) % frames.runCycle.length]
   return Math.floor(time * 3) % 8 === 7 ? frames.idle1 : frames.idle0
 }
 

@@ -1,5 +1,6 @@
 // Turns pixel data into canvases once, so the frame loop only copies finished images.
 import { hexToRgb, rasterize } from "./sprites/pixels.js"
+import { ANIMATIONS } from "./sprites/hero.js"
 import { NOX } from "./sprites/nox.js"
 import { PIKO } from "./sprites/piko.js"
 import { BLOB, BOOST, DECOR, FLAG, GOAL, PLATFORM, POP, RING, SIGNS, SPRING, TILES } from "./sprites/world.js"
@@ -34,6 +35,8 @@ function framesOf(sprite) {
 function heroCanvases(hero) {
   const frames = {}
   for (const [name, rows] of Object.entries(hero.frames)) frames[name] = spriteCanvas(rows, hero.palette)
+  frames.runCycle = ANIMATIONS.run.map((name) => frames[name])
+  frames.ballCycle = ANIMATIONS.ball.map((name) => frames[name])
   return frames
 }
 
@@ -151,6 +154,12 @@ function loopCanvas(loop, theme) {
   return { canvas, half: size / 2 }
 }
 
+// ImageData is RGBA in memory; a little-endian Uint32 view reads it as ABGR.
+function packed(hex) {
+  const [r, g, b] = hexToRgb(hex)
+  return ((255 << 24) | (b << 16) | (g << 8) | r) >>> 0
+}
+
 // Highest ground (smallest y) under one art column, or Infinity.
 function surfaceAt(level, worldX) {
   let top = Infinity
@@ -169,8 +178,9 @@ function terrainChunk(level, theme, index) {
   const canvas = makeCanvas(CHUNK, ART_H)
   const ctx = canvas.getContext("2d")
   const image = ctx.createImageData(CHUNK, ART_H)
-  const colours = Object.fromEntries(Object.entries(theme.tiles).map(([key, hex]) => [key, hexToRgb(hex)]))
-  const edge = hexToRgb(theme.edge)
+  const pixels = new Uint32Array(image.data.buffer)
+  const colours = Object.fromEntries(Object.entries(theme.tiles).map(([key, hex]) => [key, packed(hex)]))
+  const edge = packed(theme.edge)
   const tops = new Float64Array(CHUNK + 2)
   for (let x = -1; x <= CHUNK; x += 1) tops[x + 1] = surfaceAt(level, (index * CHUNK + x) * ART + 1) / ART
   for (let x = 0; x < CHUNK; x += 1) {
@@ -186,8 +196,7 @@ function terrainChunk(level, theme, index) {
           ? TILES.grass[depth][worldX % 16]
           : TILES.soil[(y - TILES.grass.length) % 16][worldX % 16]
       const exposed = (!Number.isFinite(leftTop) || leftTop > y + 0.5) || (!Number.isFinite(rightTop) || rightTop > y + 0.5)
-      const colour = exposed && depth >= 2 ? edge : colours[char]
-      image.data.set([...colour, 255], (y * CHUNK + x) * 4)
+      pixels[y * CHUNK + x] = exposed && depth >= 2 ? edge : colours[char]
     }
   }
   ctx.putImageData(image, 0, 0)
