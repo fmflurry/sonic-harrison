@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Piko Turbo visual report</title>
+  <style>
+    body { margin: 0; font-family: "Trebuchet MS", sans-serif; color: #14315c; background: #e7fbff; }
+    main { max-width: 980px; margin: 0 auto; padding: 28px 20px 48px; }
+    h1 { margin: 0 0 6px; font-size: 42px; color: #1f4fd0; }
+    h2 { margin: 28px 0 10px; font-size: 22px; }
+    p { line-height: 1.4; }
+    .flow, .cols, .files { display: flex; gap: 12px; flex-wrap: wrap; }
+    .step, .card, .file { background: #fff; border-radius: 16px; padding: 12px 14px; box-shadow: 0 4px 0 #9fd4ff; }
+    .step { min-width: 120px; }
+    .step b { display: block; color: #1f4fd0; }
+    .arrow { align-self: center; font-size: 22px; color: #1f4fd0; }
+    .ok { background: #e9ffe8; box-shadow: 0 4px 0 #3cb44a; }
+    .risk { background: #fff6d8; box-shadow: 0 4px 0 #e2a100; }
+    code { font-family: ui-monospace, monospace; font-size: 13px; }
+    @media (max-width: 700px) {
+      .flow, .cols { display: block; }
+      .arrow { display: block; transform: rotate(90deg); margin: 4px 0; }
+      h1 { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Piko Turbo</h1>
+    <p>Before this branch the repo was a one-line README. After it, Harrison gets a static French platformer at the repo root. No lives, no game over. A fall or a bump says “Oups !” and returns to the last flag with every ring kept.</p>
+
+    <h2>How a round goes</h2>
+    <div class="flow">
+      <div class="step"><b>1. Title</b>Piko Turbo, Jouer or Niveaux</div>
+      <div class="arrow">▶</div>
+      <div class="step"><b>2. Level</b>La prairie, La colline, or Le looping</div>
+      <div class="arrow">▶</div>
+      <div class="step"><b>3. Run</b>Arrows or the big tablet buttons. Space or Saut jumps.</div>
+      <div class="arrow">▶</div>
+      <div class="step"><b>4. Oups</b>Pond or orange blob respawns at the flag. Rings stay.</div>
+      <div class="arrow">▶</div>
+      <div class="step"><b>5. Bravo</b>The star banner. Next level, replay, or the list.</div>
+    </div>
+
+    <h2>What is in the levels</h2>
+    <div class="cols">
+      <div class="card"><b>La prairie</b><p>A short hop over a smiling pond, then a grass slope and an orange speed pad.</p></div>
+      <div class="card"><b>La colline</b><p>Two hills, one slow blob, a speed pad before a wider pond.</p></div>
+      <div class="card"><b>Le looping</b><p>The pad is fast enough to take the circle. Walking speed stays on the ground and still reaches the star.</p></div>
+    </div>
+
+    <h2>Files</h2>
+    <div class="files">
+      <div class="file"><code>index.html</code><br>French screens</div>
+      <div class="file"><code>css/game.css</code><br>Landscape layout and big buttons</div>
+      <div class="file"><code>js/physics.js</code><br>Run, jump, slopes, loop, respawn</div>
+      <div class="file"><code>js/levels.js</code><br>Three short levels</div>
+      <div class="file"><code>js/draw.js</code><br>Original canvas art</div>
+      <div class="file"><code>js/audio.js</code><br>WebAudio beeps</div>
+    </div>
+
+    <h2>Checks</h2>
+    <div class="cols">
+      <div class="card ok"><b>11 physics tests passed</b><p>Jump, coyote time, rings kept after a fall, checkpoint respawn, boost, slope, loop entry, and a bot that finishes every level.</p></div>
+      <div class="card ok"><b>Smoke test passed</b><p>Headless Chromium loads the title, opens La prairie, holds right and jump, and records no console errors.</p></div>
+    </div>
+
+    <h2>Risks</h2>
+    <div class="card risk">
+      <p>Phaser 3.80.1 comes from a CDN, so the page needs a network the first time. GitHub’s default branch here is <code>master</code>, not <code>main</code>. Pages can publish that branch’s root, or the <code>pages</code> workflow on push to <code>master</code> or <code>main</code>. Use only one of those two publish paths.</p>
+    </div>
+  
+<section id="kpi-metrics" style="margin-top:28px">
+<h2 style="font-size:18px;margin:0 0 8px">Metrics</h2>
+<p style="margin:0 0 10px;color:#57534e">fmflurry/sonic-harrison  feat/game  pr n/a. Status: partial.</p>
+<table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #d6d3d1"><tr><th style="text-align:left;padding:6px 10px;border-bottom:1px solid #d6d3d1">Wall</th><td style="padding:6px 10px;border-bottom:1px solid #d6d3d1">n/a</td></tr><tr><th style="text-align:left;padding:6px 10px;border-bottom:1px solid #d6d3d1">Active</th><td style="padding:6px 10px;border-bottom:1px solid #d6d3d1">n/a</td></tr><tr><th style="text-align:left;padding:6px 10px;border-bottom:1px solid #d6d3d1">Sessions</th><td style="padding:6px 10px;border-bottom:1px solid #d6d3d1">cursor 0, claude 0, opencode 0</td></tr><tr><th style="text-align:left;padding:6px 10px;border-bottom:1px solid #d6d3d1">Tokens</th><td style="padding:6px 10px;border-bottom:1px solid #d6d3d1">n/a</td></tr><tr><th style="text-align:left;padding:6px 10px;border-bottom:1px solid #d6d3d1">Tool failures</th><td style="padding:6px 10px;border-bottom:1px solid #d6d3d1">0</td></tr><tr><th style="text-align:left;padding:6px 10px;border-bottom:1px solid #d6d3d1">Guard blocks</th><td style="padding:6px 10px;border-bottom:1px solid #d6d3d1">0</td></tr><tr><th style="text-align:left;padding:6px 10px;border-bottom:1px solid #d6d3d1">Review rounds</th><td style="padding:6px 10px;border-bottom:1px solid #d6d3d1">0</td></tr><tr><th style="text-align:left;padding:6px 10px;border-bottom:1px solid #d6d3d1">Fix rounds</th><td style="padding:6px 10px;border-bottom:1px solid #d6d3d1">0</td></tr></table>
+<p style="margin:10px 0 0">Tools: none</p>
+<p style="margin:4px 0 0">Skills: none</p>
+<p style="margin:4px 0 0">Agents: main 0</p>
+<p style="margin:4px 0 0">Failure tools: none. Durations: n/a.</p>
+</section>
+</main>
+</body>
+</html>
