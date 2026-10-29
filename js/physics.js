@@ -183,8 +183,9 @@ function resolveX(body, blocks) {
   let next = body
   for (const block of blocks) {
     if (!overlapsBody(next, block)) continue
+    // Feet barely inside a block (a hill crest, a ledge corner): lift instead of pushing out sideways.
     const stepUp = next.y + next.h / 2 - block.y
-    if (stepUp <= STEP_UP && next.vy >= 0) {
+    if (stepUp <= STEP_UP) {
       next = { ...next, y: block.y - next.h / 2 + 0.01 }
       continue
     }

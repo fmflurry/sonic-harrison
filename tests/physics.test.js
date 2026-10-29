@@ -505,3 +505,27 @@ test("a boost fades back to the normal top speed while running", () => {
   const state = frames(level, runRight, 200)
   assert.ok(Math.abs(state.player.vx - 260) < 1)
 })
+
+test("jumping just past a hill crest keeps going forward", () => {
+  const level = flat({
+    width: 3000,
+    blocks: [
+      { x: 0, y: GROUND_TOP, w: 400, h: 80 },
+      { x: 700, y: GROUND_TOP - 80, w: 360, h: 160 },
+      { x: 1480, y: GROUND_TOP, w: 1520, h: 80 },
+    ],
+    slopes: [
+      { x: 400, w: 300, yLeft: GROUND_TOP, yRight: GROUND_TOP - 80 },
+      { x: 1060, w: 420, yLeft: GROUND_TOP - 80, yRight: GROUND_TOP },
+    ],
+  })
+  for (const startX of [1062, 1066, 1070]) {
+    let state = createPlayState(level)
+    const surface = GROUND_TOP - 80 + (80 * (startX - 1060)) / 420
+    state = { ...state, player: { ...state.player, x: startX, y: surface - PLAYER_H / 2, vx: 260, grounded: true } }
+    state = stepPlay(state, level, runRight, dt)
+    state = stepPlay(state, level, { ...runRight, jumpPressed: true }, dt)
+    assert.ok(state.player.x > startX, `from ${startX} landed at ${state.player.x}`)
+    assert.ok(state.player.vx > 200)
+  }
+})
