@@ -1,153 +1,291 @@
-import { GROUND_TOP, STAND_Y } from "./physics.js"
+import { course } from "./level-kit.js"
 
-const DIRT = 540 - GROUND_TOP
+// About 22 000 px each: a steady run takes 80-95 s, a calm first try with rings about two minutes.
+const prairie = course({ name: "La prairie", theme: "meadow", seed: 11 })
+  .section("Départ")
+  .start(1100)
+  .ground(700)
+  .sign("jump", 200)
+  .section("Premiers sauts")
+  .gap(70)
+  .ground(800)
+  .gap(90)
+  .ground(900)
+  .section("Petite colline")
+  .hill(80)
+  .ground(900)
+  .section("Repos")
+  .ground(1100)
+  .checkpoint()
+  .section("Les pierres")
+  .ground(400)
+  .stones(3)
+  .ground(800)
+  .section("La boule orange")
+  .ground(1000)
+  .blob(500)
+  .ground(700)
+  .section("Les ponts")
+  .ground(1300)
+  .bridges(3)
+  .checkpoint()
+  .section("Turbo")
+  .ground(500)
+  .boost(250)
+  .ground(2200)
+  .section("Deux collines")
+  .hill(100)
+  .ground(500)
+  .hill(70, { up: 360, top: 300, down: 360 })
+  .ground(800)
+  .checkpoint()
+  .section("Le saut du ruisseau")
+  .gap(100)
+  .ground(700)
+  .gap(110)
+  .ground(900)
+  .section("Le ressort")
+  .ground(700)
+  .spring(300)
+  .ground(1000)
+  .checkpoint()
+  .section("Dernière ligne")
+  .stones(2, { hop: 90 })
+  .ground(900)
+  .hill(60)
+  .ground(1200)
+  .section("Arrivée")
+  .finish(1100)
 
-function block(x, w, top = GROUND_TOP) {
-  return { x, y: top, w, h: top === GROUND_TOP ? DIRT : 540 - top }
-}
+const colline = course({ name: "La colline", theme: "hills", seed: 23 })
+  .section("Départ")
+  .start(1000)
+  .ground(600)
+  .section("Monter, descendre")
+  .hill(110, { up: 500, top: 400, down: 500 })
+  .ground(700)
+  .sign("roll", 120)
+  .section("Rouler en bas")
+  .slope(170, 700)
+  .ground(500)
+  .slope(-170, 900)
+  .ground(900)
+  .checkpoint()
+  .section("Le ressort du haut")
+  .ground(700)
+  .springCliff(150)
+  .ground(1400)
+  .lift(700)
+  .drop(150)
+  .ground(900)
+  .section("La boule orange")
+  .ground(900)
+  .blob(450)
+  .ground(700)
+  .checkpoint()
+  .section("Grande descente")
+  .slope(200, 800)
+  .ground(400)
+  .sign("roll", 300)
+  .slope(-200, 1100)
+  .ground(1000)
+  .section("Petites bosses")
+  .hill(60, { up: 300, top: 200, down: 300 })
+  .hill(80, { up: 320, top: 240, down: 320 })
+  .ground(700)
+  .checkpoint()
+  .section("Le ruisseau")
+  .gap(90)
+  .ground(700)
+  .stones(2)
+  .ground(900)
+  .blob(400)
+  .ground(600)
+  .section("Les ponts")
+  .ground(1300)
+  .bridges(3)
+  .checkpoint()
+  .section("Dernière colline")
+  .hill(140, { up: 600, top: 500, down: 700 })
+  .ground(900)
+  .boost(300)
+  .ground(1300)
+  .section("Arrivée")
+  .finish(1000)
 
-function pad(x, speed = 470) {
-  return { x, y: GROUND_TOP - 18, w: 88, h: 18, speed }
-}
+const looping = course({ name: "Le looping", theme: "sunset", seed: 37 })
+  .section("Départ")
+  .start(1000)
+  .ground(500)
+  .section("Premier looping")
+  .ground(600)
+  .boost(500)
+  .ground(1300)
+  .loop()
+  .ground(800)
+  .section("Repos")
+  .ground(1000)
+  .checkpoint()
+  .section("Le bac")
+  .ground(300)
+  .stones(3, { stone: 160, hop: 100 })
+  .ferry(1050, 640)
+  .ground(900)
+  .section("Ressort")
+  .ground(600)
+  .springCliff(140)
+  .ground(1200)
+  .drop(140)
+  .ground(800)
+  .checkpoint()
+  .section("Turbo et looping")
+  .ground(500)
+  .boost(250)
+  .ground(1400)
+  .loop(120)
+  .ground(900)
+  .blob(350)
+  .ground(700)
+  .section("Collines rapides")
+  .hill(90)
+  .ground(600)
+  .checkpoint()
+  .section("Ponts et ascenseur")
+  .ground(1400)
+  .bridges(3)
+  .ground(1200)
+  .lift(800)
+  .section("Triple saut")
+  .gap(90)
+  .ground(500)
+  .gap(100)
+  .ground(500)
+  .gap(90)
+  .ground(800)
+  .checkpoint()
+  .section("Grand final")
+  .ground(500)
+  .boost(250)
+  .ground(1400)
+  .loop()
+  .ground(700)
+  .section("Arrivée")
+  .finish(1000)
 
-function blob(x, minX, maxX) {
-  return { x, y: GROUND_TOP - 22, w: 42, h: 36, vx: 42, minX, maxX }
-}
+const plage = course({ name: "La plage", theme: "beach", seed: 41 })
+  .section("Départ")
+  .start(1000)
+  .ground(700)
+  .section("Les vagues")
+  .gap(80)
+  .ground(700)
+  .stones(3)
+  .ground(900)
+  .section("La boule orange")
+  .ground(900)
+  .blob(450)
+  .ground(600)
+  .checkpoint()
+  .section("Le radeau")
+  .ground(300)
+  .stones(4, { stone: 140, hop: 100 })
+  .ferry(1300, 860)
+  .ground(1000)
+  .section("La dune")
+  .hill(100, { up: 500, top: 400, down: 600 })
+  .ground(700)
+  .checkpoint()
+  .section("Turbo sur le sable")
+  .ground(500)
+  .boost(250)
+  .ground(2000)
+  .section("Ressort")
+  .ground(600)
+  .spring(300)
+  .ground(900)
+  .section("Les pontons")
+  .ground(1300)
+  .bridges(3)
+  .checkpoint()
+  .section("Les rochers")
+  .gap(90)
+  .ground(600)
+  .stones(2)
+  .ground(800)
+  .blob(400)
+  .ground(700)
+  .section("Le phare")
+  .ground(1200)
+  .lift(700)
+  .ground(800)
+  .checkpoint()
+  .section("Dernière vague")
+  .gap(100)
+  .ground(900)
+  .hill(70)
+  .ground(900)
+  .section("Arrivée")
+  .finish(1000)
 
-function row(x0, x1, step, y) {
-  const rings = []
-  for (let x = x0; x <= x1 + 0.01; x += step) rings.push({ x, y })
-  return rings
-}
+const nuit = course({ name: "La nuit étoilée", theme: "night", seed: 53 })
+  .section("Départ")
+  .start(1000)
+  .ground(600)
+  .section("Les cristaux")
+  .gap(80)
+  .ground(800)
+  .hill(90)
+  .ground(700)
+  .section("Looping de lune")
+  .ground(500)
+  .boost(250)
+  .ground(1300)
+  .loop()
+  .ground(800)
+  .checkpoint()
+  .section("Le grand ressort")
+  .ground(600)
+  .springCliff(150)
+  .ground(1300)
+  .bridges(2)
+  .drop(150)
+  .ground(800)
+  .section("Rouler sous les étoiles")
+  .sign("roll", 120)
+  .slope(180, 800)
+  .ground(400)
+  .slope(-180, 1000)
+  .ground(900)
+  .checkpoint()
+  .section("Le lac")
+  .ground(300)
+  .stones(3)
+  .ferry(1000, 640)
+  .ground(800)
+  .blob(400)
+  .ground(700)
+  .section("L'ascenseur")
+  .ground(1200)
+  .lift(700)
+  .ground(700)
+  .checkpoint()
+  .section("Double looping")
+  .ground(500)
+  .boost(250)
+  .ground(1400)
+  .loop(120)
+  .ground(1000)
+  .boost(250)
+  .ground(1300)
+  .loop()
+  .ground(700)
+  .checkpoint()
+  .section("Les étoiles filantes")
+  .gap(90)
+  .ground(600)
+  .gap(100)
+  .ground(900)
+  .section("Arrivée")
+  .finish(1100)
 
-function arc(x0, x1, y, lift) {
-  return [0.2, 0.45, 0.7].map((t) => ({
-    x: x0 + (x1 - x0) * t,
-    y: y - Math.sin(t * Math.PI) * lift,
-  }))
-}
-
-function loopRings(loop) {
-  return [0.35, -0.45, -1.57, -2.5, 2.85].map((angle) => ({
-    x: loop.cx + Math.cos(angle) * (loop.r - 6),
-    y: loop.cy + Math.sin(angle) * (loop.r - 6),
-  }))
-}
-
-const loop = { cx: 1080, cy: STAND_Y - 112, r: 112, minSpeed: 340 }
-
-export const levels = [
-  {
-    name: "La prairie",
-    width: 3000,
-    deathY: 700,
-    spawn: { x: 400, y: STAND_Y },
-    blocks: [block(0, 1020), block(1100, 600), block(2660, 340)],
-    slopes: [
-      { x: 1700, w: 300, yLeft: GROUND_TOP, yRight: 348 },
-      { x: 2000, w: 360, yLeft: 348, yRight: 348 },
-      { x: 2360, w: 300, yLeft: 348, yRight: GROUND_TOP },
-    ],
-    rings: [
-      ...row(560, 900, 170, GROUND_TOP - 70),
-      ...arc(1000, 1140, GROUND_TOP - 64, 64),
-      ...row(1240, 1600, 180, GROUND_TOP - 70),
-      ...row(2060, 2280, 110, 348 - 52),
-      ...row(2720, 2840, 60, GROUND_TOP - 110),
-    ],
-    blobs: [],
-    boosts: [pad(2740)],
-    checkpoints: [
-      { x: 400, y: STAND_Y },
-      { x: 1260, y: STAND_Y },
-    ],
-    goal: { x: 2880, y: GROUND_TOP - 110, w: 64, h: 110 },
-    loop: null,
-    ponds: [{ x: 1020, w: 80 }],
-    decor: [
-      { type: "cloud", x: 180, y: 90, s: 1 },
-      { type: "cloud", x: 760, y: 60, s: 1.3 },
-      { type: "cloud", x: 1500, y: 100, s: 0.9 },
-      { type: "cloud", x: 2300, y: 70, s: 1.2 },
-      { type: "bush", x: 520, y: GROUND_TOP },
-      { type: "bush", x: 1500, y: GROUND_TOP },
-      { type: "flower", x: 360, y: GROUND_TOP, color: 0xff5d8f },
-      { type: "flower", x: 640, y: GROUND_TOP, color: 0xffd23f },
-      { type: "flower", x: 860, y: GROUND_TOP, color: 0xb388ff },
-      { type: "flower", x: 1400, y: GROUND_TOP, color: 0xffffff },
-    ],
-  },
-  {
-    name: "La colline",
-    width: 3600,
-    deathY: 700,
-    spawn: { x: 400, y: STAND_Y },
-    blocks: [block(0, 640), block(1260, 500), block(1880, 600), block(2940, 660)],
-    slopes: [
-      { x: 640, w: 300, yLeft: GROUND_TOP, yRight: 380 },
-      { x: 940, w: 320, yLeft: 380, yRight: GROUND_TOP },
-      { x: 2480, w: 240, yLeft: GROUND_TOP, yRight: 330 },
-      { x: 2720, w: 220, yLeft: 330, yRight: GROUND_TOP },
-    ],
-    rings: [
-      ...row(380, 560, 90, GROUND_TOP - 72),
-      ...row(780, 1120, 110, 340),
-      ...arc(1740, 1980, GROUND_TOP - 64, 80),
-      ...row(2140, 2400, 130, GROUND_TOP - 70),
-      ...row(3080, 3320, 120, GROUND_TOP - 70),
-    ],
-    blobs: [blob(1480, 1400, 1600)],
-    boosts: [pad(1680)],
-    checkpoints: [
-      { x: 400, y: STAND_Y },
-      { x: 1300, y: STAND_Y },
-      { x: 2140, y: STAND_Y },
-    ],
-    goal: { x: 3440, y: GROUND_TOP - 110, w: 64, h: 110 },
-    loop: null,
-    ponds: [{ x: 1760, w: 120 }],
-    decor: [
-      { type: "cloud", x: 240, y: 80, s: 1.1 },
-      { type: "cloud", x: 1100, y: 50, s: 1.4 },
-      { type: "cloud", x: 2100, y: 90, s: 1 },
-      { type: "cloud", x: 3000, y: 64, s: 1.2 },
-      { type: "bush", x: 480, y: GROUND_TOP },
-      { type: "flower", x: 340, y: GROUND_TOP, color: 0xff5d8f },
-      { type: "flower", x: 2100, y: GROUND_TOP, color: 0x7bedff },
-      { type: "flower", x: 3040, y: GROUND_TOP, color: 0xffd23f },
-    ],
-  },
-  {
-    name: "Le looping",
-    width: 3200,
-    deathY: 700,
-    spawn: { x: 400, y: STAND_Y },
-    blocks: [block(0, 3200)],
-    slopes: [],
-    rings: [
-      ...row(380, 620, 120, GROUND_TOP - 70),
-      ...loopRings(loop),
-      ...row(1560, 1800, 120, GROUND_TOP - 80),
-      ...row(2480, 2720, 120, GROUND_TOP - 70),
-    ],
-    blobs: [blob(2100, 2000, 2220)],
-    boosts: [pad(760, 520)],
-    checkpoints: [
-      { x: 400, y: STAND_Y },
-      { x: 1560, y: STAND_Y },
-      { x: 2360, y: STAND_Y },
-    ],
-    goal: { x: 3040, y: GROUND_TOP - 110, w: 64, h: 110 },
-    loop,
-    ponds: [],
-    decor: [
-      { type: "cloud", x: 200, y: 70, s: 1.2 },
-      { type: "cloud", x: 1680, y: 56, s: 1.3 },
-      { type: "cloud", x: 2500, y: 96, s: 1 },
-      { type: "flower", x: 360, y: GROUND_TOP, color: 0xff5d8f },
-      { type: "flower", x: 1680, y: GROUND_TOP, color: 0xffd23f },
-      { type: "flower", x: 2600, y: GROUND_TOP, color: 0xb388ff },
-      { type: "bush", x: 560, y: GROUND_TOP },
-    ],
-  },
-]
+export const levels = [prairie, colline, looping, plage, nuit]

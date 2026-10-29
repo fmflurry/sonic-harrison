@@ -11,12 +11,15 @@ export const VIEW_H = 540
 export const GRAVITY = 2200
 export const JUMP_VY = -720
 const FRICTION = 280
+// A boost lasts about a second while running, then fades back to the normal top speed.
+const OVERSPEED_FADE = 240
 const MAX_FALL = 980
 const MAX_VX = 640
 const COYOTE = 0.16
 const JUMP_BUFFER = 0.16
 const JUMP_LOCK = 0.12
 const RING_RADIUS = 40
+const STEP_UP = 14
 
 const ROLL_START = 80
 const ROLL_KEEP = 30
@@ -180,6 +183,11 @@ function resolveX(body, blocks) {
   let next = body
   for (const block of blocks) {
     if (!overlapsBody(next, block)) continue
+    const stepUp = next.y + next.h / 2 - block.y
+    if (stepUp <= STEP_UP && next.vy >= 0) {
+      next = { ...next, y: block.y - next.h / 2 + 0.01 }
+      continue
+    }
     if (next.vx > 0) {
       next = { ...next, x: block.x - next.w / 2, vx: 0 }
     } else if (next.vx < 0) {
@@ -243,7 +251,7 @@ function landOnLedge(body, beforeFeet, x, y, w, carrier) {
   if (body.vy < 0) return null
   if (body.x + body.w / 2 <= x || body.x - body.w / 2 >= x + w) return null
   const feet = body.y + body.h / 2
-  if (beforeFeet > y + 6 || feet < y) return null
+  if (beforeFeet > y + 3 || feet < y) return null
   return { ...body, y: y - body.h / 2, vy: 0, grounded: true, slope: 0, carrier }
 }
 
@@ -281,8 +289,10 @@ function steerRun(body, input, stats, dt) {
   let vx = body.vx
   if (input.right && !input.left) {
     if (vx < stats.maxRun) vx = Math.min(stats.maxRun, vx + accel * dt)
+    else vx = Math.max(stats.maxRun, vx - OVERSPEED_FADE * dt)
   } else if (input.left && !input.right) {
     if (vx > -stats.maxRun) vx = Math.max(-stats.maxRun, vx - accel * dt)
+    else vx = Math.min(-stats.maxRun, vx + OVERSPEED_FADE * dt)
   } else {
     vx = approach(vx, 0, FRICTION * dt)
   }

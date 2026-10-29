@@ -226,7 +226,7 @@ function bot(level, state) {
 test("each level can be finished by running and jumping", () => {
   for (const level of levels) {
     let state = createPlayState(level)
-    for (let i = 0; i < 60 * 50 && state.phase !== "clear"; i += 1) {
+    for (let i = 0; i < 60 * 200 && state.phase !== "clear"; i += 1) {
       state = stepPlay(state, level, bot(level, state), dt)
     }
     assert.equal(
@@ -494,4 +494,14 @@ test("a respawn uncurls the player and stops the dash", () => {
   assert.equal(respawned.player.ball, false)
   assert.equal(respawned.player.h, PLAYER_H)
   assert.equal(respawned.player.dashTime, 0)
+})
+
+test("a boost fades back to the normal top speed while running", () => {
+  const level = flat({
+    width: 4000,
+    blocks: [{ x: 0, y: GROUND_TOP, w: 4000, h: 80 }],
+    boosts: [{ x: 200, y: GROUND_TOP - 18, w: 80, h: 18, speed: 480 }],
+  })
+  const state = frames(level, runRight, 200)
+  assert.ok(Math.abs(state.player.vx - 260) < 1)
 })
