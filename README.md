@@ -1,14 +1,22 @@
 # Piko Turbo
 
-Petit jeu de plateforme dans le navigateur, pour Harrison. Piko est un hérisson bleu original : dessins faits dans la page, sons générés, aucun personnage ni musique d'éditeur.
+Petit jeu de plateforme dans le navigateur, pour Harrison. Piko est un hérisson bleu original, Nox un hérisson violet tout aussi original. Tout le pixel art est dessiné à la main dans le code (palettes et lignes de caractères), les sons sont générés, aucun personnage, image ou musique d'éditeur, aucun appel réseau.
 
 ## Jouer
 
-Les flèches gauche et droite font courir. Espace ou la flèche haut fait sauter. Sur une tablette, en paysage, les gros boutons Gauche, Droite et Saut font la même chose.
+Sur l'écran titre, choisis Piko ou Nox (le choix est gardé pour la prochaine fois).
 
-Tomber dans l'eau ou toucher une boule orange ramène au dernier drapeau. Piko garde ses anneaux. Il n'y a pas de défaite.
+- Flèches gauche et droite : courir.
+- Espace ou flèche haut : sauter. En sautant, le héros se roule en boule.
+- Flèche bas en courant : rouler en boule. La boule garde sa vitesse et accélère dans les descentes. Lâcher la flèche le remet debout.
+- Maj (Nox seulement) : l'éclair, un petit élan vers l'avant. Il se recharge en une seconde et demie.
+- Échap ou P : pause. M : couper le son.
 
-Trois niveaux courts : La prairie, La colline, Le looping. Le tapis orange donne un coup de vitesse. Dans le looping, Piko prend le grand cercle s'il va vite. S'il va doucement, le chemin au sol continue jusqu'à l'arrivée.
+Sur une tablette, en paysage, les gros boutons Gauche, Droite, Boule, Éclair et Saut font la même chose. Pause et son sont en haut à droite.
+
+Une boule ou un éclair fait éclater les boules orange (elles reviennent un peu plus tard). Tomber dans l'eau ou toucher une boule orange debout ramène au dernier drapeau, avec tous les anneaux. Il n'y a pas de défaite.
+
+Cinq niveaux d'environ deux minutes : La prairie, La colline, Le looping, La plage, La nuit étoilée. Chaque niveau a quatre drapeaux, des pierres pour traverser l'eau, des ressorts, des ponts et un tapis orange qui donne un coup de vitesse. Pour un looping, il faut arriver vite, en général juste après un tapis orange.
 
 Sers le dossier (GitHub Pages, ou `python3 -m http.server`) et ouvre la racine. Un double-clic sur `index.html` peut bloquer les modules du jeu.
 
@@ -20,6 +28,12 @@ npx playwright install chromium
 npm test
 npm run smoke
 ```
+
+`npm test` vérifie la physique, les dessins et les niveaux : un robot qui tient la flèche droite et saute aux trous finit chaque niveau, avec Piko et avec Nox, sans tomber, en 70 à 170 secondes, avec au plus 35 secondes entre deux drapeaux. Si le navigateur de Playwright ne peut pas être téléchargé, `PW_CHROMIUM=/chemin/vers/chrome npm run smoke` utilise un Chromium déjà installé.
+
+## Dessins
+
+Les sprites sont dans `js/sprites/` : `piko.js` et `nox.js` pour les héros, `hero.js` pour les poses communes, `world.js` pour le reste. `node tools/render-sprites.mjs` refait les planches de `docs/sprites/` à partir des mêmes données. `tools/capture-report.mjs` prend les captures d'écran du rapport de PR.
 
 ## GitHub Pages
 
