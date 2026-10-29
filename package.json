@@ -1,0 +1,12 @@
+{
+  "name": "piko-turbo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/physics.test.js",
+    "smoke": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.55.1"
+  }
+}

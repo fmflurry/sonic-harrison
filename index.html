@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Piko Turbo</title>
+    <meta name="description" content="Piko Turbo, un petit jeu de plateforme pour Harrison." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='36' r='18' fill='%232f7bff'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="css/game.css" />
+  </head>
+  <body>
+    <p id="rotate-hint">Tourne la tablette sur le côté</p>
+    <main>
+      <section id="title-screen" class="screen">
+        <svg class="mascot" viewBox="0 0 140 130" aria-hidden="true">
+          <polygon points="28,70 18,28 46,58" fill="#1f4fd0" />
+          <polygon points="52,48 46,12 74,42" fill="#1f4fd0" />
+          <polygon points="78,46 86,8 104,44" fill="#1f4fd0" />
+          <polygon points="104,58 124,22 122,66" fill="#1f4fd0" />
+          <ellipse cx="74" cy="74" rx="34" ry="32" fill="#2f7bff" />
+          <ellipse cx="84" cy="84" rx="16" ry="14" fill="#d7f0ff" />
+          <ellipse cx="58" cy="104" rx="14" ry="8" fill="#ff3b4e" />
+          <ellipse cx="92" cy="104" rx="14" ry="8" fill="#ff3b4e" />
+          <circle cx="92" cy="64" r="8" fill="#ffffff" />
+          <circle cx="110" cy="64" r="6" fill="#ffffff" />
+          <circle cx="95" cy="65" r="3" fill="#1b2433" />
+          <circle cx="112" cy="65" r="2.4" fill="#1b2433" />
+          <path d="M90 78 q12 12 20 0" fill="none" stroke="#1b2433" stroke-width="3" stroke-linecap="round" />
+        </svg>
+        <h1>Piko Turbo</h1>
+        <p class="tag">Le hérisson bleu</p>
+        <p class="for">Pour Harrison</p>
+        <div class="actions">
+          <button type="button" id="play" class="big">Jouer</button>
+          <button type="button" id="levels" class="big alt">Niveaux</button>
+        </div>
+        <p class="help">Flèches pour courir, espace pour sauter. Les gros boutons marchent au doigt.</p>
+      </section>
+
+      <section id="select-screen" class="screen" hidden>
+        <h2>Choisis un niveau</h2>
+        <div id="level-list" class="actions"></div>
+        <button type="button" id="back-title" class="big alt">Retour</button>
+      </section>
+
+      <section id="play-screen" class="screen" hidden>
+        <div id="hud">
+          <span id="rings">Anneaux : 0</span>
+          <span id="level-name"></span>
+        </div>
+        <div id="game"></div>
+        <p id="notice" hidden>Oups !</p>
+        <div id="touch">
+          <div class="pad-left">
+            <button type="button" data-hold="left" aria-label="Gauche">◀</button>
+            <button type="button" data-hold="right" aria-label="Droite">▶</button>
+          </div>
+          <button type="button" class="jump" data-hold="jump" aria-label="Sauter">Saut</button>
+        </div>
+      </section>
+
+      <section id="clear-screen" class="screen" hidden>
+        <h2>Bravo !</h2>
+        <p id="clear-rings">Anneaux : 0</p>
+        <div class="actions">
+          <button type="button" id="next" class="big">Niveau suivant</button>
+          <button type="button" id="replay" class="big alt">Rejouer</button>
+          <button type="button" id="clear-levels" class="big alt">Niveaux</button>
+        </div>
+      </section>
+      <p id="boot-error" hidden>Le jeu n'a pas pu se charger. Réessaie dans un moment.</p>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>
