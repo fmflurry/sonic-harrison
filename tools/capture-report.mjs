@@ -67,10 +67,24 @@ for (const size of ["wide", "phone"]) {
   await page.keyboard.down("ArrowRight")
   await page.waitForTimeout(1400)
   await shot(page, `piko-run-${size}`)
-  await page.keyboard.down("ArrowDown")
-  await page.waitForTimeout(350)
+  await page.keyboard.press("Space")
+  await page.waitForTimeout(220)
+  await shot(page, `piko-jump-${size}`)
+  await page.keyboard.up("ArrowRight")
+  await page.close()
+  failures.push(...errors)
+}
+
+for (const size of ["wide", "phone"]) {
+  const { page, errors } = await open(size)
+  const x = await page.evaluate(async () => {
+    const { levels } = await import("./js/levels.js")
+    return levels[0].sections.find((section) => section.label === "Turbo").x
+  })
+  await startAt(page, 0, x + 40)
+  await page.keyboard.down("ArrowRight")
+  await page.waitForTimeout(1500)
   await shot(page, `piko-ball-${size}`)
-  await page.keyboard.up("ArrowDown")
   await page.keyboard.up("ArrowRight")
   await page.close()
   failures.push(...errors)

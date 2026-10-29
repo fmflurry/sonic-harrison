@@ -319,12 +319,6 @@ h2 { font-size: clamp(2rem, 5vw, 3.2rem); }
   box-shadow: 0 6px 0 #c73668;
 }
 
-#touch .ball {
-  background: #2f7bff;
-  color: #fff;
-  box-shadow: 0 6px 0 #1f4fd0;
-}
-
 #touch .dash {
   --charge: 1;
   color: #fff;

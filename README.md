@@ -7,12 +7,13 @@ Petit jeu de plateforme dans le navigateur, pour Harrison. Piko est un hérisson
 Sur l'écran titre, choisis Piko ou Nox (le choix est gardé pour la prochaine fois).
 
 - Flèches gauche et droite : courir.
-- Espace ou flèche haut : sauter. En sautant, le héros se roule en boule.
-- Flèche bas en courant : rouler en boule. La boule garde sa vitesse et accélère dans les descentes. Lâcher la flèche le remet debout.
+- Espace ou flèche haut : sauter. Chaque saut roule le héros en boule.
+- Quand il va très vite (tapis orange, élan dans une descente, sortie de looping), il se met en boule tout seul. La boule garde sa vitesse et accélère dans les descentes, puis il se relève quand il ralentit.
+- Flèche bas en courant (clavier seulement) : se mettre en boule exprès.
 - Maj (Nox seulement) : l'éclair, un petit élan vers l'avant. Il se recharge en une seconde et demie.
 - Échap ou P : pause. M : couper le son.
 
-Sur une tablette, en paysage, les gros boutons Gauche, Droite, Boule, Éclair et Saut font la même chose. Pause et son sont en haut à droite.
+Sur une tablette, en paysage, les gros boutons Gauche, Droite, Éclair et Saut font la même chose. Pause et son sont en haut à droite.
 
 Une boule ou un éclair fait éclater les boules orange (elles reviennent un peu plus tard). Tomber dans l'eau ou toucher une boule orange debout ramène au dernier drapeau, avec tous les anneaux. Il n'y a pas de défaite.
 

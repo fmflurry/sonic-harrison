@@ -61,11 +61,12 @@
     <h2>Running, the ball, the dash</h2>
     <div class="shots">
       <figure><img src="feat-pixel-art-spin-nox-levels/piko-run-wide.png" alt="Piko running in La prairie" /><figcaption>Piko running, 1280×720</figcaption></figure>
-      <figure><img src="feat-pixel-art-spin-nox-levels/piko-ball-wide.png" alt="Piko rolling as a ball" /><figcaption>Down arrow: Piko rolls as a ball</figcaption></figure>
+      <figure><img src="feat-pixel-art-spin-nox-levels/piko-jump-wide.png" alt="Piko jumping as a ball" /><figcaption>Every jump is a spin ball</figcaption></figure>
+      <figure><img src="feat-pixel-art-spin-nox-levels/piko-ball-wide.png" alt="Piko rolling after the boost pad" /><figcaption>After the orange pad Piko curls up by himself (no button)</figcaption></figure>
       <figure><img src="feat-pixel-art-spin-nox-levels/nox-dash-wide.png" alt="Nox dashing with an afterimage trail" /><figcaption>Shift: Nox's Éclair, with an afterimage trail</figcaption></figure>
       <figure><img src="feat-pixel-art-spin-nox-levels/nox-dash-phone.png" alt="Nox dashing at 844 by 390" /><figcaption>Same at 844×390, the Éclair button refills</figcaption></figure>
-      <figure><img src="feat-pixel-art-spin-nox-levels/piko-run-phone.png" alt="Piko running at 844 by 390" /><figcaption>Piko at 844×390 with the Boule button</figcaption></figure>
-      <figure><img src="feat-pixel-art-spin-nox-levels/piko-ball-phone.png" alt="Piko ball at 844 by 390" /><figcaption>Ball at 844×390</figcaption></figure>
+      <figure><img src="feat-pixel-art-spin-nox-levels/piko-run-phone.png" alt="Piko running at 844 by 390" /><figcaption>Piko at 844×390: only arrows and Saut</figcaption></figure>
+      <figure><img src="feat-pixel-art-spin-nox-levels/piko-ball-phone.png" alt="Piko ball at 844 by 390" /><figcaption>Automatic ball at 844×390</figcaption></figure>
     </div>
 
     <h2>Every frame of both heroes (×6)</h2>
@@ -87,22 +88,22 @@
     <table>
       <thead><tr><th>Level</th><th>Sections</th><th>Length (px)</th><th>Piko (s)</th><th>Nox (s)</th><th>Flags</th><th>Longest stretch between flags (s)</th><th>Rings (bot got)</th><th>Widest gap (jump reach ×)</th><th>Falls</th></tr></thead>
       <tbody>
-        <tr><td>La prairie</td><td>13</td><td>27 210</td><td>99.8</td><td>89.7</td><td>4</td><td>25.2</td><td>265 (244)</td><td>110 (×1.55)</td><td>0</td></tr>
-        <tr><td>La colline</td><td>11</td><td>26 770</td><td>98.2</td><td>88.1</td><td>4</td><td>24.6</td><td>260 (238)</td><td>100 (×1.70)</td><td>0</td></tr>
-        <tr><td>Le looping</td><td>11</td><td>24 060</td><td>86.5</td><td>78.0</td><td>4</td><td>19.8</td><td>259 (213)</td><td>100 (×1.70)</td><td>0</td></tr>
-        <tr><td>La plage</td><td>12</td><td>25 080</td><td>91.7</td><td>82.3</td><td>4</td><td>20.9</td><td>268 (231)</td><td>100 (×1.70)</td><td>0</td></tr>
-        <tr><td>La nuit étoilée</td><td>10</td><td>25 620</td><td>92.5</td><td>83.3</td><td>4</td><td>25.1</td><td>276 (230)</td><td>100 (×1.70)</td><td>0</td></tr>
+        <tr><td>La prairie</td><td>13</td><td>27 210</td><td>97.3</td><td>87.6</td><td>4</td><td>24.9</td><td>265 (244)</td><td>110 (×1.55)</td><td>0</td></tr>
+        <tr><td>La colline</td><td>11</td><td>26 770</td><td>87.8</td><td>78.7</td><td>4</td><td>21.8</td><td>260 (239)</td><td>100 (×1.70)</td><td>0</td></tr>
+        <tr><td>Le looping</td><td>11</td><td>24 060</td><td>82.7</td><td>75.3</td><td>4</td><td>18.3</td><td>259 (213)</td><td>100 (×1.70)</td><td>0</td></tr>
+        <tr><td>La plage</td><td>12</td><td>25 080</td><td>89.6</td><td>80.6</td><td>4</td><td>20.9</td><td>268 (231)</td><td>100 (×1.70)</td><td>0</td></tr>
+        <tr><td>La nuit étoilée</td><td>10</td><td>25 620</td><td>87.7</td><td>80.2</td><td>4</td><td>24.7</td><td>276 (238)</td><td>100 (×1.70)</td><td>0</td></tr>
       </tbody>
     </table>
     <p>The bot never stops, looks around or backtracks for rings, so a calm first try by a child should land around two minutes. That estimate has not been checked with a child.</p>
 
     <h2>Rules that changed</h2>
     <div class="cols">
-      <div class="card ok"><b>Ball and roll</b>A jump curls into a ball (hitbox 34 instead of 48). Down while moving rolls: friction 60 instead of 280, a downhill bonus, release to stand up. Standing needs room overhead.</div>
+      <div class="card ok"><b>Ball, like the 16-bit games</b>Every jump curls into a ball (hitbox 34 instead of 48). Above 400 px/s on the ground (boost pad, momentum down a slope, out of a loop) he curls up by himself, rolls with low friction and speeds up downhill, then stands up once back near running speed. Running downhill now builds momentum too. No Boule button; the keyboard down arrow still curls on purpose.</div>
       <div class="card ok"><b>Blob pop</b>A ball or a dash pops a blob for 4 s; it comes back only when the player is 240 px away. Touching one standing still returns to the flag, rings kept.</div>
       <div class="card ok"><b>Nox</b>Top speed 290 instead of 260. Éclair: 600 px/s forward for 0.24 s, then 1.5 s to recharge, shown on the button and in the HUD.</div>
       <div class="card ok"><b>New level parts</b>Springs, one-way bridges, a lift and a ferry (both optional, for rings), several loops per level.</div>
-      <div class="card risk"><b>Behaviour changes</b>A boost now fades back to run speed in about a second (before, holding right kept 480 px/s forever and overshot stones). Steps up to 14 px are climbed. One-way ledges only catch from above.</div>
+      <div class="card risk"><b>Behaviour changes</b>A boost now ends: the automatic ball rolls on it with low friction, then he stands up near running speed (before, holding right kept 480 px/s forever and overshot stones). A jump tap shorter than one frame is no longer lost. Steps up to 14 px are climbed. One-way ledges only catch from above.</div>
       <div class="card risk"><b>Calmer flashing</b>The respawn blink went from 7 to 2.5 per second, under the 3 per second limit.</div>
     </div>
 
@@ -118,8 +119,8 @@
     </div>
 
     <h2>Tests</h2>
-    <pre>npm test         # 68 passed: physics 32, levels 21, sprites 9, characters 6
-npm run smoke    # 11 passed: title, character choice, run, ball, dash, crisp pixels, pause and focus, viewport fit</pre>
+    <pre>npm test         # 73 passed: physics 37, levels 21, sprites 9, characters 6
+npm run smoke    # 12 passed: title, character choice, run, jump ball, down-arrow ball, dash, crisp pixels, pause and focus, viewport fit</pre>
 
     <h2>Not checked</h2>
     <div class="cols">
