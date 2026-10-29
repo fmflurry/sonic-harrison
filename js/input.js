@@ -22,18 +22,25 @@ export function readHeld() {
   }
 }
 
-function releaseAll() {
-  for (const field of FIELDS) {
-    key[field] = false
-    touch[field] = false
-  }
+// Touch buttons can lose their pointerup under an overlay; held keys still get their keyup.
+export function releaseTouch() {
+  for (const field of FIELDS) touch[field] = false
 }
 
-export function bindInput(onGesture) {
+function releaseAll() {
+  for (const field of FIELDS) key[field] = false
+  releaseTouch()
+}
+
+// While a level runs, the game keys belong to the game; elsewhere Space and arrows keep their
+// usual job of pressing and moving between buttons.
+export function bindInput(onGesture, gameHasKeys) {
   window.addEventListener("keydown", (event) => {
     const field = heldByCode[event.code]
-    if (!field || event.repeat) return
+    if (!field) return
+    if (!gameHasKeys()) return
     event.preventDefault()
+    if (event.repeat && key[field]) return
     key[field] = true
     onGesture()
   })
@@ -60,5 +67,3 @@ export function bindInput(onGesture) {
     button.addEventListener("pointercancel", release)
   }
 }
-
-export { releaseAll }

@@ -1,7 +1,7 @@
 import { spriteCanvas } from "./art.js"
 import { isMuted, setMuted, unlockAudio } from "./audio.js"
 import { characterOf, loadCharacter, saveCharacter } from "./characters.js"
-import { bindInput, releaseAll } from "./input.js"
+import { bindInput, releaseTouch } from "./input.js"
 import { levels } from "./levels.js"
 import { DASH_COOLDOWN } from "./physics.js"
 import { inspect, isPaused, setHooks, setPaused, setRunning, stage, startLevel } from "./play.js"
@@ -92,7 +92,8 @@ function begin(index) {
   const dash = characterOf(character).dash
   dashButton.hidden = !dash
   dashMeter.hidden = !dash
-  releaseAll()
+  releaseTouch()
+  setGameInert(false)
   show(playScreen)
   try {
     startLevel(index, character)
@@ -102,12 +103,22 @@ function begin(index) {
   }
 }
 
+function setGameInert(value) {
+  for (const part of [$("#hud"), $("#touch")]) part.inert = value
+}
+
 function pause(value) {
-  if (playScreen.hidden || !clearScreen.hidden) return
+  if (playScreen.hidden || !clearScreen.hidden || isPaused() === value) return
   setPaused(value)
-  releaseAll()
+  releaseTouch()
   pauseScreen.hidden = !value
+  setGameInert(value)
   refit()
+  ;(value ? $("#resume") : $("#pause")).focus()
+}
+
+function gameHasKeys() {
+  return !playScreen.hidden && pauseScreen.hidden && clearScreen.hidden
 }
 
 titleScreen.addEventListener("click", (event) => {
@@ -132,20 +143,20 @@ $("#clear-levels").addEventListener("click", () => show(selectScreen))
 nextButton.addEventListener("click", () => begin(current + 1))
 $("#pause").addEventListener("click", () => pause(true))
 $("#resume").addEventListener("click", () => pause(false))
-$("#pause-levels").addEventListener("click", () => {
+function leavePause(screen) {
   setPaused(false)
-  show(selectScreen)
-})
-$("#pause-title").addEventListener("click", () => {
-  setPaused(false)
-  show(titleScreen)
-})
+  setGameInert(false)
+  show(screen)
+}
+$("#pause-levels").addEventListener("click", () => leavePause(selectScreen))
+$("#pause-title").addEventListener("click", () => leavePause(titleScreen))
 muteButton.addEventListener("click", () => {
   setMuted(!isMuted())
   muteButton.setAttribute("aria-pressed", String(isMuted()))
   muteButton.setAttribute("aria-label", isMuted() ? "Remettre le son" : "Couper le son")
 })
 window.addEventListener("keydown", (event) => {
+  if (event.repeat) return
   if (event.code === "Escape" || event.code === "KeyP") pause(!isPaused())
   if (event.code === "KeyM") muteButton.click()
 })
@@ -174,6 +185,7 @@ setHooks({
     progress = saveProgress(storage, Math.max(progress, index + 1))
     renderLevelList()
     show(clearScreen)
+    ;(nextButton.hidden ? $("#replay") : nextButton).focus()
   },
 })
 
@@ -182,5 +194,5 @@ globalThis.__piko = { inspect, stage, begin, chooseCharacter: (id) => chooseChar
 paintPortraits()
 chooseCharacter(character)
 renderLevelList()
-bindInput(unlockAudio)
+bindInput(unlockAudio, gameHasKeys)
 bindViewport()

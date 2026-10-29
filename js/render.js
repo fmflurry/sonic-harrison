@@ -184,10 +184,21 @@ function drawObjects(ctx, level, state, art, camA, time) {
   }
 }
 
+function heroPlacement(state) {
+  const player = state.player
+  return {
+    x: Math.round(player.x / ART) - HERO / 2,
+    y: Math.round((player.y + player.h / 2) / ART) - HERO,
+    flip: player.mode !== "loop" && player.facing < 0,
+  }
+}
+
+// Called once per physics step, so effects move at game speed whatever the screen refresh rate.
 // Trail and particles are kept in world art pixels so they stay put while the camera follows.
-function updateEffects(fx, state, frame, ax, ay, flip) {
+export function advanceEffects(fx, state, art, time) {
   fx.tick += 1
   const player = state.player
+  const { x: ax, y: ay, flip } = heroPlacement(state)
   if (player.dashTime > 0 && fx.tick % 3 === 0) {
     spawn(fx, ax + (flip ? 30 : 2), ay + 10 + (fx.tick % 12), flip ? 3 : -3, 0, 8, "#bff6ff")
   }
@@ -195,7 +206,7 @@ function updateEffects(fx, state, frame, ax, ay, flip) {
     const slot = fx.trail[fx.trailNext]
     slot.x = ax
     slot.y = ay
-    slot.frame = frame
+    slot.frame = heroFrame(art.heroes[state.character], state, time)
     slot.flip = flip
     slot.age = 0
     fx.trailNext = (fx.trailNext + 1) % TRAIL_SIZE
@@ -208,6 +219,12 @@ function updateEffects(fx, state, frame, ax, ay, flip) {
   if (player.ball && player.grounded && Math.abs(player.vx) > 200 && fx.tick % 5 === 0) {
     spawn(fx, ax + 16 - Math.sign(player.vx) * 10, ay + 30, -Math.sign(player.vx) * 0.5, -0.3, 12, "#ffffff")
   }
+  for (const particle of fx.particles) {
+    if (particle.life <= 0) continue
+    particle.life -= 1
+    particle.x += particle.vx
+    particle.y += particle.vy
+  }
 }
 
 function drawEffects(ctx, fx, camA) {
@@ -219,9 +236,6 @@ function drawEffects(ctx, fx, camA) {
   ctx.globalAlpha = 1
   for (const particle of fx.particles) {
     if (particle.life <= 0) continue
-    particle.life -= 1
-    particle.x += particle.vx
-    particle.y += particle.vy
     ctx.fillStyle = particle.colour
     ctx.fillRect(Math.round(particle.x) - camA, Math.round(particle.y), 2, 2)
   }
@@ -258,11 +272,8 @@ export function drawWorld(ctx, view) {
   const player = state.player
   const frames = art.heroes[state.character]
   const frame = heroFrame(frames, state, time)
-  const worldX = Math.round(player.x / ART) - HERO / 2
+  const { x: worldX, y: ay, flip } = heroPlacement(state)
   const ax = worldX - camA
-  const ay = Math.round((player.y + player.h / 2) / ART) - HERO
-  const flip = player.mode !== "loop" && player.facing < 0
-  updateEffects(fx, state, frame, worldX, ay, flip)
   drawEffects(ctx, fx, camA)
   const shimmer = player.invuln > 0 && player.invuln <= 1.45 && Math.floor(time * SHIMMER_HZ * 2) % 2 === 0
   ctx.globalAlpha = shimmer ? 0.5 : 1

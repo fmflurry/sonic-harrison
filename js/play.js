@@ -3,7 +3,7 @@ import { sfx } from "./audio.js"
 import { readHeld } from "./input.js"
 import { levels } from "./levels.js"
 import { VIEW_H, VIEW_W, createPlayState, moverPosition, stepPlay } from "./physics.js"
-import { createEffects, drawWorld } from "./render.js"
+import { advanceEffects, createEffects, drawWorld } from "./render.js"
 
 const STEP_MS = 1000 / 60
 const MAX_STEPS = 5
@@ -28,8 +28,14 @@ export function setRunning(value) {
 }
 
 export function setPaused(value) {
+  if (paused === value) return
   paused = value
-  if (session) session.last = performance.now()
+  if (!session || !running) return
+  cancelAnimationFrame(frameRequest)
+  if (!paused) {
+    session.last = performance.now()
+    frameRequest = requestAnimationFrame(tick)
+  }
 }
 
 export function isPaused() {
@@ -103,32 +109,36 @@ function playCues(state) {
   if (state.justSprung) sfx.spring()
 }
 
+// Presses are latched until a physics step uses them: on a 120 Hz screen many frames run no step.
+function latchPresses(held) {
+  if (held.jump && !session.jumpWasDown) session.jumpQueued = true
+  if (held.dash && !session.dashWasDown) session.dashQueued = true
+  session.jumpWasDown = held.jump
+  session.dashWasDown = held.dash
+}
+
 function tick(now) {
-  if (!running || !session) return
+  if (!running || !session || paused) return
   frameRequest = requestAnimationFrame(tick)
   const delta = Math.max(0, Math.min(now - session.last, 100))
   session.last = now
-  if (paused) {
-    render()
-    return
-  }
   const held = readHeld()
+  latchPresses(held)
   if (session.state.phase === "play") {
     session.acc += delta
-    let jumpPressed = held.jump && !session.jumpWasDown
-    let dashPressed = held.dash && !session.dashWasDown
     for (let steps = 0; session.acc >= STEP_MS && steps < MAX_STEPS; steps += 1) {
       const player = session.state.player
-      if (jumpPressed && (player.grounded || player.coyote > 0) && player.mode === "free") sfx.jump()
+      if (session.jumpQueued && (player.grounded || player.coyote > 0) && player.mode === "free") sfx.jump()
       session.state = stepPlay(
         session.state,
         session.level,
-        { left: held.left, right: held.right, down: held.down, jumpPressed, dashPressed },
+        { left: held.left, right: held.right, down: held.down, jumpPressed: session.jumpQueued, dashPressed: session.dashQueued },
         STEP_MS / 1000,
       )
-      jumpPressed = false
-      dashPressed = false
+      session.jumpQueued = false
+      session.dashQueued = false
       session.acc -= STEP_MS
+      advanceEffects(session.fx, session.state, sharedArt(), session.time)
       playCues(session.state)
       if (session.state.phase === "clear") {
         sfx.clear()
@@ -138,8 +148,6 @@ function tick(now) {
     }
     session.acc = Math.min(session.acc, STEP_MS * MAX_STEPS)
   }
-  session.jumpWasDown = held.jump
-  session.dashWasDown = held.dash
   session.time += delta / 1000
   render()
   hooks.onSync(session.state, session.level)
@@ -160,6 +168,8 @@ export function startLevel(index, character) {
     frames: 0,
     jumpWasDown: true,
     dashWasDown: true,
+    jumpQueued: false,
+    dashQueued: false,
   }
   paused = false
   running = true
