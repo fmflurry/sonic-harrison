@@ -1,8 +1,14 @@
 * { box-sizing: border-box; }
 
+:root {
+  --app-height: 100vh;
+  --app-height: 100dvh;
+}
+
 html, body {
   margin: 0;
-  height: 100%;
+  height: var(--app-height);
+  max-height: var(--app-height);
   overflow: hidden;
   touch-action: manipulation;
   font-family: "Trebuchet MS", "Comic Sans MS", "Chalkboard SE", sans-serif;
@@ -10,10 +16,20 @@ html, body {
   background: linear-gradient(#69c8ff, #e7fbff);
 }
 
+main {
+  position: relative;
+  height: var(--app-height);
+  max-height: var(--app-height);
+  overflow: hidden;
+}
+
 button { font: inherit; cursor: pointer; }
 
 .screen {
-  min-height: 100dvh;
+  height: var(--app-height);
+  max-height: var(--app-height);
+  min-height: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -21,6 +37,28 @@ button { font: inherit; cursor: pointer; }
   gap: 10px;
   padding: 24px 16px;
 }
+
+.fit-stage { padding: 0; gap: 0; }
+
+.fit-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: min(640px, 100%);
+  padding: 16px;
+  flex: 0 0 auto;
+}
+
+.title-layout, .title-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+#title-screen { cursor: pointer; }
 
 .screen[hidden], [hidden] { display: none !important; }
 
@@ -84,10 +122,9 @@ h2 { font-size: clamp(2rem, 5vw, 3.2rem); }
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  justify-content: flex-start;
   padding: 0;
-  min-height: 0;
-  position: fixed;
-  inset: 0;
+  position: relative;
   background: #8fd4ff;
 }
 
@@ -95,7 +132,9 @@ h2 { font-size: clamp(2rem, 5vw, 3.2rem); }
   position: relative;
   flex: 1 1 auto;
   width: 100%;
+  min-width: 0;
   min-height: 0;
+  overflow: hidden;
 }
 
 #hud {
@@ -136,7 +175,11 @@ h2 { font-size: clamp(2rem, 5vw, 3.2rem); }
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding: 10px 16px max(10px, env(safe-area-inset-bottom));
+  padding:
+    8px
+    max(12px, env(safe-area-inset-right))
+    max(8px, env(safe-area-inset-bottom))
+    max(12px, env(safe-area-inset-left));
   background: #d3924a;
   border-top: 8px solid #3cb44a;
   pointer-events: none;
@@ -146,17 +189,17 @@ h2 { font-size: clamp(2rem, 5vw, 3.2rem); }
 
 #touch button {
   pointer-events: auto;
-  width: 20vmin;
-  height: 20vmin;
-  min-width: 88px;
-  min-height: 88px;
-  max-width: 136px;
-  max-height: 136px;
+  flex: 0 0 auto;
+  width: clamp(64px, min(20vmin, 18dvh), 136px);
+  height: clamp(64px, min(20vmin, 18dvh), 136px);
   border: 4px solid #fff;
   border-radius: 28px;
   background: #ffe14a;
   color: #5a3b00;
-  font-size: clamp(1.4rem, 4vw, 2rem);
+  padding: 0 2px;
+  font-size: clamp(0.95rem, min(4vw, 4.2dvh), 2rem);
+  line-height: 1;
+  white-space: nowrap;
   font-weight: 900;
   box-shadow: 0 6px 0 #e2a100;
   touch-action: none;
@@ -172,9 +215,11 @@ h2 { font-size: clamp(2rem, 5vw, 3.2rem); }
 #touch button:active { transform: translateY(4px); }
 
 #clear-screen {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 4;
+  height: auto;
+  max-height: none;
   background: linear-gradient(#ffe9a8, #fff8de);
 }
 
@@ -212,4 +257,37 @@ h2 { font-size: clamp(2rem, 5vw, 3.2rem); }
 
 @media (max-width: 720px) {
   .actions { width: min(94vw, 420px); }
+}
+
+@media (max-height: 560px) {
+  .fit-content { gap: 6px; padding: 8px 12px; }
+  .title-layout {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 8px 14px;
+  }
+  .title-copy { gap: 4px; }
+  h1 { font-size: clamp(1.7rem, 8vh, 3.2rem); }
+  h2 { font-size: clamp(1.35rem, 6vh, 2.2rem); }
+  .tag, .for, .help, #clear-rings { font-size: clamp(0.95rem, 3.4vh, 1.25rem); }
+  .mascot { width: min(108px, 28vh); }
+  .actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: auto;
+    max-width: 100%;
+    gap: 8px;
+  }
+  .big {
+    min-height: clamp(44px, 10vh, 64px);
+    padding: 0 16px;
+    font-size: clamp(1rem, 3.6vh, 1.45rem);
+    box-shadow: 0 4px 0 #e2a100;
+  }
+  .big.alt { box-shadow: 0 4px 0 #9fd4ff; }
+  .big:active { box-shadow: 0 1px 0 #e2a100; }
+  .big.alt:active { box-shadow: 0 1px 0 #9fd4ff; }
+  #touch { padding-top: 6px; padding-bottom: max(6px, env(safe-area-inset-bottom)); }
 }

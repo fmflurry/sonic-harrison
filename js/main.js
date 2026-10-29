@@ -2,6 +2,7 @@ import { unlockAudio } from "./audio.js"
 import { bindInput } from "./input.js"
 import { levels } from "./levels.js"
 import { setHooks, setRunning, startLevel } from "./play.js"
+import { bindViewport, refit } from "./viewport.js"
 
 const titleScreen = document.querySelector("#title-screen")
 const selectScreen = document.querySelector("#select-screen")
@@ -23,6 +24,8 @@ function show(screen) {
   clearScreen.hidden = screen !== clearScreen
   playScreen.hidden = screen !== playScreen && screen !== clearScreen
   if (screen !== playScreen && screen !== clearScreen) setRunning(false)
+  refit()
+  requestAnimationFrame(refit)
 }
 
 function begin(index) {
@@ -45,7 +48,10 @@ levels.forEach((level, index) => {
   levelList.append(button)
 })
 
-document.querySelector("#play").addEventListener("click", () => begin(0))
+titleScreen.addEventListener("click", (event) => {
+  if (event.target.closest("#levels")) return
+  begin(0)
+})
 document.querySelector("#levels").addEventListener("click", () => show(selectScreen))
 document.querySelector("#back-title").addEventListener("click", () => show(titleScreen))
 document.querySelector("#replay").addEventListener("click", () => begin(current))
@@ -67,3 +73,4 @@ setHooks({
 })
 
 bindInput(unlockAudio)
+bindViewport()

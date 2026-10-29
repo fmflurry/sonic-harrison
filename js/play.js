@@ -22,9 +22,19 @@ export function setRunning(value) {
   running = value
 }
 
+export function refreshGameScale() {
+  if (!game) return
+  const parent = document.querySelector("#game")
+  if (!parent || parent.clientWidth < 8 || parent.clientHeight < 8) return
+  if (typeof game.scale.updateBounds === "function") game.scale.updateBounds()
+  game.scale.refresh()
+}
+
 export function startLevel(index) {
   pendingIndex = index
   running = true
+  const parent = document.querySelector("#game")
+  void parent?.offsetHeight
   if (!game) {
     game = new Phaser.Game({
       type: Phaser.CANVAS,
@@ -45,7 +55,7 @@ export function startLevel(index) {
   }
   const scene = game.scene.getScene("play")
   if (scene) scene.scene.restart()
-  game.scale.refresh()
+  refreshGameScale()
 }
 
 const PhaserScene = globalThis.Phaser?.Scene ?? class {}
