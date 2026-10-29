@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Piko Turbo pixel art, spin, Nox and two-minute levels</title>
+  <style>
+    body { margin: 0; font-family: "Trebuchet MS", sans-serif; color: #14315c; background: #e7fbff; }
+    main { max-width: 1040px; margin: 0 auto; padding: 28px 20px 48px; }
+    h1 { margin: 0 0 6px; font-size: 38px; color: #1f4fd0; }
+    h2 { margin: 30px 0 10px; font-size: 22px; }
+    p, li { line-height: 1.45; }
+    .flow, .cols, .shots, .files { display: flex; gap: 12px; flex-wrap: wrap; }
+    .step, .card, .file { background: #fff; border-radius: 16px; padding: 12px 14px; box-shadow: 0 4px 0 #9fd4ff; }
+    .step { flex: 1 1 150px; }
+    .step b, .card b { display: block; margin-bottom: 4px; }
+    .arrow { align-self: center; font-size: 22px; color: #1f4fd0; }
+    .card { flex: 1 1 300px; }
+    .ok { background: #e9ffe8; box-shadow: 0 4px 0 #3cb44a; }
+    .risk { background: #fff6d8; box-shadow: 0 4px 0 #e2a100; }
+    figure { margin: 0; flex: 1 1 300px; background: #fff; border-radius: 16px; padding: 10px; box-shadow: 0 4px 0 #9fd4ff; }
+    figure img { width: 100%; height: auto; display: block; border-radius: 8px; image-rendering: pixelated; }
+    figcaption { margin-top: 6px; font-size: 14px; font-weight: 700; }
+    .wide { flex-basis: 100%; }
+    table { border-collapse: collapse; width: 100%; background: #fff; border-radius: 12px; overflow: hidden; }
+    th, td { padding: 7px 9px; text-align: left; border-bottom: 1px solid #d6eefc; font-size: 14px; }
+    th { background: #1f4fd0; color: #fff; }
+    code { font-family: ui-monospace, monospace; font-size: 13px; }
+    pre { background: #14244a; color: #e7fbff; padding: 12px; border-radius: 12px; overflow-x: auto; font-size: 12px; }
+    @media (max-width: 720px) {
+      h1 { font-size: 28px; }
+      .flow, .cols, .shots, .files { display: block; }
+      .arrow { display: none; }
+      .step, .card, figure, .file { margin-bottom: 10px; }
+      th, td { font-size: 12px; padding: 5px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Pixel art, the spin ball, Nox, and two-minute levels</h1>
+    <p>Piko Turbo now looks like one 16-bit game. Every sprite and tile is hand-authored pixel data in the code. Piko curls into a ball, Nox joins as a second hero with a dash, and the five levels each last about two minutes. Phaser and its CDN script are gone, so the game makes no network call at all.</p>
+
+    <h2>How a frame is drawn</h2>
+    <div class="flow">
+      <div class="step"><b>1. Pixel data</b><code>js/sprites/*.js</code>: palettes and rows of characters, one per pixel</div>
+      <div class="arrow">▶</div>
+      <div class="step"><b>2. Pre-render once</b><code>js/art.js</code>: sprite canvases, sky, parallax, loops, terrain chunks</div>
+      <div class="arrow">▶</div>
+      <div class="step"><b>3. Art buffer</b><code>js/render.js</code>: 480×270, positions rounded to whole art pixels</div>
+      <div class="arrow">▶</div>
+      <div class="step"><b>4. Screen</b><code>js/play.js</code>: one upscale at device pixels, <code>imageSmoothingEnabled = false</code></div>
+    </div>
+
+    <h2>Menu and heroes</h2>
+    <div class="shots">
+      <figure><img src="feat-pixel-art-spin-nox-levels/menu-wide.png" alt="Title with Piko and Nox, 1280 by 720" /><figcaption>Title, 1280×720: pick Piko or Nox</figcaption></figure>
+      <figure><img src="feat-pixel-art-spin-nox-levels/menu-nox-phone.png" alt="Title with Nox chosen, 844 by 390" /><figcaption>844×390, Nox chosen (kept in localStorage)</figcaption></figure>
+    </div>
+
+    <h2>Running, the ball, the dash</h2>
+    <div class="shots">
+      <figure><img src="feat-pixel-art-spin-nox-levels/piko-run-wide.png" alt="Piko running in La prairie" /><figcaption>Piko running, 1280×720</figcaption></figure>
+      <figure><img src="feat-pixel-art-spin-nox-levels/piko-jump-wide.png" alt="Piko jumping as a ball" /><figcaption>Every jump is a spin ball</figcaption></figure>
+      <figure><img src="feat-pixel-art-spin-nox-levels/piko-ball-wide.png" alt="Piko rolling after the boost pad" /><figcaption>After the orange pad Piko curls up by himself (no button)</figcaption></figure>
+      <figure><img src="feat-pixel-art-spin-nox-levels/nox-dash-wide.png" alt="Nox dashing with an afterimage trail" /><figcaption>Shift: Nox's Éclair, with an afterimage trail</figcaption></figure>
+      <figure><img src="feat-pixel-art-spin-nox-levels/nox-dash-phone.png" alt="Nox dashing at 844 by 390" /><figcaption>Same at 844×390, the Éclair button refills</figcaption></figure>
+      <figure><img src="feat-pixel-art-spin-nox-levels/piko-run-phone.png" alt="Piko running at 844 by 390" /><figcaption>Piko at 844×390: only arrows and Saut</figcaption></figure>
+      <figure><img src="feat-pixel-art-spin-nox-levels/piko-ball-phone.png" alt="Piko ball at 844 by 390" /><figcaption>Automatic ball at 844×390</figcaption></figure>
+    </div>
+
+    <h2>Every frame of both heroes (×6)</h2>
+    <div class="shots">
+      <figure class="wide"><img src="../sprites/heroes-x6.png" alt="All Piko and Nox frames enlarged six times" /><figcaption>Rows: Piko idle, blink and 6 run frames; run, rise, fall, brake, hurt, cheer; 8 spin frames. Then the same for Nox. Made by <code>tools/render-sprites.mjs</code> from the game's own data.</figcaption></figure>
+    </div>
+
+    <h2>One frame per level</h2>
+    <div class="shots">
+      <figure><img src="feat-pixel-art-spin-nox-levels/level-1.png" alt="La prairie stepping stones" /><figcaption>1 · La prairie: stepping stones over water</figcaption></figure>
+      <figure><img src="feat-pixel-art-spin-nox-levels/level-2.png" alt="La colline rolling slope" /><figcaption>2 · La colline: rolling on the big slope</figcaption></figure>
+      <figure><img src="feat-pixel-art-spin-nox-levels/level-3.png" alt="Le looping loop" /><figcaption>3 · Le looping: the first loop</figcaption></figure>
+      <figure><img src="feat-pixel-art-spin-nox-levels/level-4.png" alt="La plage raft and stones" /><figcaption>4 · La plage: the stones and the ferry ledge</figcaption></figure>
+      <figure><img src="feat-pixel-art-spin-nox-levels/level-5.png" alt="La nuit etoilee with Nox" /><figcaption>5 · La nuit étoilée: the double loop with Nox</figcaption></figure>
+    </div>
+
+    <h2>Bot run per level</h2>
+    <p>A bot holds right, jumps when the ground ahead ends or a blob is close, and never presses down or dash. The test fails if it falls, takes under 70 s or over 170 s, or goes more than 35 s between two flags.</p>
+    <table>
+      <thead><tr><th>Level</th><th>Sections</th><th>Length (px)</th><th>Piko (s)</th><th>Nox (s)</th><th>Flags</th><th>Longest stretch between flags (s)</th><th>Rings (bot got)</th><th>Widest gap (jump reach ×)</th><th>Falls</th></tr></thead>
+      <tbody>
+        <tr><td>La prairie</td><td>13</td><td>27 210</td><td>97.3</td><td>87.6</td><td>4</td><td>24.9</td><td>265 (244)</td><td>110 (×1.55)</td><td>0</td></tr>
+        <tr><td>La colline</td><td>11</td><td>26 770</td><td>87.8</td><td>78.7</td><td>4</td><td>21.8</td><td>260 (239)</td><td>100 (×1.70)</td><td>0</td></tr>
+        <tr><td>Le looping</td><td>11</td><td>24 060</td><td>82.7</td><td>75.3</td><td>4</td><td>18.3</td><td>259 (213)</td><td>100 (×1.70)</td><td>0</td></tr>
+        <tr><td>La plage</td><td>12</td><td>25 080</td><td>89.6</td><td>80.6</td><td>4</td><td>20.9</td><td>268 (231)</td><td>100 (×1.70)</td><td>0</td></tr>
+        <tr><td>La nuit étoilée</td><td>10</td><td>25 620</td><td>87.7</td><td>80.2</td><td>4</td><td>24.7</td><td>276 (238)</td><td>100 (×1.70)</td><td>0</td></tr>
+      </tbody>
+    </table>
+    <p>The bot never stops, looks around or backtracks for rings, so a calm first try by a child should land around two minutes. That estimate has not been checked with a child.</p>
+
+    <h2>Rules that changed</h2>
+    <div class="cols">
+      <div class="card ok"><b>Ball, like the 16-bit games</b>Every jump curls into a ball (hitbox 34 instead of 48). Above 400 px/s on the ground (boost pad, momentum down a slope, out of a loop) he curls up by himself, rolls with low friction and speeds up downhill, then stands up once back near running speed. Running downhill now builds momentum too. No Boule button; the keyboard down arrow still curls on purpose.</div>
+      <div class="card ok"><b>Blob pop</b>A ball or a dash pops a blob for 4 s; it comes back only when the player is 240 px away. Touching one standing still returns to the flag, rings kept.</div>
+      <div class="card ok"><b>Nox</b>Top speed 290 instead of 260. Éclair: 600 px/s forward for 0.24 s, then 1.5 s to recharge, shown on the button and in the HUD.</div>
+      <div class="card ok"><b>New level parts</b>Springs, one-way bridges, a lift and a ferry (both optional, for rings), several loops per level.</div>
+      <div class="card risk"><b>Behaviour changes</b>A boost now ends: the automatic ball rolls on it with low friction, then he stands up near running speed (before, holding right kept 480 px/s forever and overshot stones). A jump tap shorter than one frame is no longer lost. Steps up to 14 px are climbed. One-way ledges only catch from above.</div>
+      <div class="card risk"><b>Calmer flashing</b>The respawn blink went from 7 to 2.5 per second, under the 3 per second limit.</div>
+    </div>
+
+    <h2>Main files</h2>
+    <div class="files">
+      <div class="file"><code>js/sprites/</code><br>pixels, hero poses, Piko, Nox, world</div>
+      <div class="file"><code>js/art.js</code>, <code>js/render.js</code>, <code>js/themes.js</code><br>pre-render and draw</div>
+      <div class="file"><code>js/play.js</code><br>canvas loop, replaces Phaser</div>
+      <div class="file"><code>js/physics.js</code><br>ball, roll, dash, springs, platforms</div>
+      <div class="file"><code>js/level-kit.js</code>, <code>js/levels.js</code><br>five levels as named sections</div>
+      <div class="file"><code>index.html</code>, <code>js/main.js</code>, <code>css/game.css</code><br>hero choice, HUD, pause, mute, touch</div>
+      <div class="file"><code>tools/</code><br>PNG codec, sprite sheets, report screenshots</div>
+    </div>
+
+    <h2>Tests</h2>
+    <pre>npm test         # 73 passed: physics 37, levels 21, sprites 9, characters 6
+npm run smoke    # 12 passed: title, character choice, run, jump ball, down-arrow ball, dash, crisp pixels, pause and focus, viewport fit</pre>
+
+    <h2>Not checked</h2>
+    <div class="cols">
+      <div class="card risk"><b>No real device</b>Screenshots and timings come from headless Chromium in a VM (median frame 16.7 ms at device pixel ratio 2). No tablet, no real touch, no Safari.</div>
+      <div class="card risk"><b>No child, no ears</b>Difficulty and the two-minute length are estimates from the bot. The new sounds were never heard.</div>
+    </div>
+  </main>
+</body>
+</html>
