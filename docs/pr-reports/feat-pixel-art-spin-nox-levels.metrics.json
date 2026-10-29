@@ -1,0 +1,41 @@
+{
+  "feature": {
+    "repo": "fmflurry/sonic-harrison",
+    "branch": "feat/pixel-art-spin-nox-levels",
+    "pr": null
+  },
+  "prs": [],
+  "wall_ms": null,
+  "active_ms": null,
+  "idle_gap_min": 5,
+  "sessions": {
+    "cursor": 0,
+    "claude": 1,
+    "opencode": 0
+  },
+  "tools": [],
+  "skills": ["autonomous"],
+  "agents": [
+    {
+      "name": "main",
+      "calls": 0
+    },
+    {
+      "name": "general-purpose",
+      "calls": 1
+    }
+  ],
+  "tool_failures": 0,
+  "failure_tools": [],
+  "duration_ms": null,
+  "guard_blocks": 1,
+  "guards": {},
+  "review_rounds": 1,
+  "fix_rounds": 1,
+  "tokens": null,
+  "tokens_known": 0,
+  "events": 0,
+  "first_ts": null,
+  "last_ts": null,
+  "partial": true
+}
